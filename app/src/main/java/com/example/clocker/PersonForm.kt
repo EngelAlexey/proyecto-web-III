@@ -124,7 +124,7 @@ class PersonForm : AppCompatActivity() {
             }
 
         } catch (e: Exception) {
-            Toast.makeText(this, e.message ?: "Error al buscar persona", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, e.message ?: getString(R.string.ErrorMsgGetById), Toast.LENGTH_LONG).show()
         }
     }
 
