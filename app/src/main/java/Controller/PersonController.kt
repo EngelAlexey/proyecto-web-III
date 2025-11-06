@@ -31,12 +31,13 @@ class PersonController {
         }
     }
 
-    fun removePerson(person: Person){
+    fun removePerson(person: Person): Person? {
         try {
             dataManager.removePerson(person.ID)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgRemove))
         }
+        return person
     }
 
     fun getAllPerson(): List<Person>{

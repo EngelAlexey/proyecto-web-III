@@ -21,4 +21,6 @@
     <string name="TextNo">No</string>
     <string name="TextTitleDialogQuestion">Estás seguro?</string>
     <string name="MsgDuplicateDate">Ya existe un registro</string>
+    <string name="MsgDelete">Registro eliminado</string>
+    <string name="MsgUpdate">Registro actualizado</string>
 </resources>

@@ -22,4 +22,6 @@
     <string name="TextNo">No</string>
     <string name="TextTitleDialogQuestion">Are you sure?</string>
     <string name="MsgDuplicateDate">Already a registry</string>
+    <string name="MsgDelete">Record was removed</string>
+    <string name="MsgUpdate">Record was updated</string>
 </resources>
