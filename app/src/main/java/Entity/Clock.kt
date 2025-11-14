@@ -1,13 +1,14 @@
 package Entity
 
 import android.graphics.Bitmap
+import java.time.LocalDate
 import java.util.Date
 
 class Clock {
 
     private var idClock:        String     = ""
     private var idPerson:       String     = ""
-    private var dateClock:           Date       = Date()
+    private var dateClock:      LocalDate
     private var type:           String     = ""
     private var address:        String = ""
     private var latitude:       Int = 0
@@ -17,7 +18,7 @@ class Clock {
     constructor(
         idClock: String,
         idPerson: String,
-        dateClock: Date,
+        dateClock: LocalDate,
         type: String,
         address: String,
         latitude: Int,
@@ -47,7 +48,7 @@ class Clock {
         get() = this.type
         set(value) { this.type = value }
 
-    var DateClock: Date
+    var DateClock: LocalDate
         get() = this.dateClock
         set(value) { this.dateClock = value }
 

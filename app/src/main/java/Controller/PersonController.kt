@@ -31,12 +31,13 @@ class PersonController {
         }
     }
 
-    fun removePerson(person: Person){
+    fun removePerson(person: Person): Person? {
         try {
             dataManager.removePerson(person.ID)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgRemove))
         }
+        return person
     }
 
     fun getAllPerson(): List<Person>{
@@ -47,30 +48,20 @@ class PersonController {
         }
     }
 
-    fun getByIdPerson(id: String): Person {
+    fun getByIdPerson(id: String): Person? {
         try {
-            var result = dataManager.getByIdPerson(id)
-            if (result == null){
-                throw Exception(context.getString(R.string.ErrorMsgGetById))
-            }
-            return result
+            return dataManager.getByIdPerson(id)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgGetById))
         }
     }
 
-   /* fun getByFullName(id: String): Person {
+    fun getByFullName(fullname: String): Person? {
         try {
-            var result = dataManager.getByFullNamePerson(id)
-            if (result == null){
-                throw Exception(context.getString(R.string.ErrorMsgGetById))
-            }
-           // return result
+            return dataManager.getByFullNamePerson(fullname)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgGetById))
         }
     }
-
-    */
 
 }

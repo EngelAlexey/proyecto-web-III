@@ -1,23 +1,24 @@
 package Entity
 
+import java.time.LocalDate
 import java.util.Date
 
 class Attendances {
 
     private var IDAttendance:       String = ""
-    private var dateAttendance:     Date = Date()
+    private var dateAttendance:     LocalDate
     private var IDPerson:           String = ""
-    private var TimeEntry:          Date = Date()
-    private var TimeExit:           Date = Date()
+    private var TimeEntry:          LocalDate
+    private var TimeExit:           LocalDate
     private var EntryID:            String = ""
     private var ExitID:             String = ""
 
     constructor(
         IDAttendance: String,
-        dateAttendance: Date,
+        dateAttendance: LocalDate,
         IDPerson: String,
-        TimeEntry: Date,
-        TimeExit: Date,
+        TimeEntry: LocalDate,
+        TimeExit: LocalDate,
         EntryID: String,
         ExitID: String)
 
@@ -35,7 +36,7 @@ class Attendances {
         get() = this.IDAttendance
         set(value) { this.IDAttendance = value }
 
-    var DateAttendance: Date
+    var DateAttendance: LocalDate
         get() = this.dateAttendance
         set(value) { this.dateAttendance = value }
 
@@ -43,11 +44,11 @@ class Attendances {
         get() = this.IDPerson
         set(value) { this.IDPerson = value }
 
-    var timeEntry: Date
+    var timeEntry: LocalDate
         get() = this.TimeEntry
         set(value) { this.TimeEntry = value }
 
-    var timeExit: Date
+    var timeExit: LocalDate
         get() = this.TimeExit
         set(value) { this.TimeExit = value }
 
@@ -59,8 +60,8 @@ class Attendances {
         get() = this.ExitID
         set(value) { this.ExitID = value }
 
-    fun HoursAttendance(): Long {
+    /*fun HoursAttendance(): Long {
         return this.TimeExit.time - this.TimeEntry.time
-    }
+    }*/
 
 }

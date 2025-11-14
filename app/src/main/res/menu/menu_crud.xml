@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/btnSavePerson"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/btnSave"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/btnDeletePerson"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/btnDelete"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/btnCancel"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="@string/btnCancel"
+        app:showAsAction="always|withText" />
+</menu>
