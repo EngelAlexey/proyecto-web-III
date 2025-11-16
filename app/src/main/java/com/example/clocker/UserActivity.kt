@@ -5,6 +5,8 @@ import Controller.UserController
 import Entity.Person
 import Entity.User
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
@@ -38,6 +40,9 @@ class UserActivity : AppCompatActivity() {
             insets
         }
 
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         userController = UserController(this)
         TextId = findViewById(R.id.TextID)
         TextName = findViewById(R.id.TextName)
@@ -58,6 +63,30 @@ class UserActivity : AppCompatActivity() {
             if (isChecked) CheckTypeClock.isChecked = false
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_crud, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.btnSave -> {
+                saveUser()
+                true
+            }
+            R.id.btnDelete -> {
+                deleteUser()
+                true
+            }
+            R.id.btnCancel -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     //Utils
     fun clear() {
         TextId.text.clear()
@@ -142,7 +171,7 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    fun deletePerson(){
+    fun deleteUser(){
         try {
             val user = userController.getByIdUser(TextId.text.toString().trim())
             val id = TextId.text.toString().trim()
@@ -151,7 +180,7 @@ class UserActivity : AppCompatActivity() {
             } else if (user == null){
                 Toast.makeText(this, R.string.ErrorMsgRemove, Toast.LENGTH_LONG).show()
             } else {
-                userController.removeUser(user)
+                userController.removeUser(id)
             }
             Toast.makeText(this, R.string.MsgDelete, Toast.LENGTH_LONG).show()
         } catch (e: Exception) {

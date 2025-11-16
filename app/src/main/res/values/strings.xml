@@ -27,4 +27,5 @@
     <string name="chbTypeAdmin">Administrador</string>
     <string name="TextEmail">Correo eléctronico</string>
     <string name="TextPassword">Contraseña</string>
+    <string name="btnUser">Usuarios</string>
 </resources>

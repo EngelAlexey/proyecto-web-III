@@ -31,9 +31,9 @@ class UserController {
         }
     }
 
-    fun removeUser(user: User) {
+    fun removeUser(id: String) {
         try {
-            dataManager.removeUser(user)
+            dataManager.removeUser(id)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgRemove))
         }

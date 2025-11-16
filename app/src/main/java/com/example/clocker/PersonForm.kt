@@ -65,11 +65,11 @@ class PersonForm : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.btnSavePerson -> {
+            R.id.btnSave -> {
                 savePerson()
                 true
             }
-            R.id.btnDeletePerson -> {
+            R.id.btnDelete -> {
                 deletePerson()
                 true
             }
