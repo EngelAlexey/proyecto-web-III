@@ -23,4 +23,8 @@
     <string name="MsgDuplicateDate">Ya existe un registro</string>
     <string name="MsgDelete">Registro eliminado</string>
     <string name="MsgUpdate">Registro actualizado</string>
+    <string name="chbTypeClock">Reloj</string>
+    <string name="chbTypeAdmin">Administrador</string>
+    <string name="TextEmail">Correo eléctronico</string>
+    <string name="TextPassword">Contraseña</string>
 </resources>

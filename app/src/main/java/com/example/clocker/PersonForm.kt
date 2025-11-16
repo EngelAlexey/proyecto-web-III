@@ -2,11 +2,9 @@ package com.example.clocker
 
 import Controller.PersonController
 import Entity.Person
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Switch
@@ -39,8 +37,8 @@ class PersonForm : AppCompatActivity() {
         personController = PersonController(this)
         TextId = findViewById(R.id.TextID)
         TextName = findViewById(R.id.TextName)
-        TextFLastName = findViewById(R.id.TextFLastName)
-        TextSLastName = findViewById(R.id.TextSLastName)
+        TextFLastName = findViewById(R.id.TextType)
+        TextSLastName = findViewById(R.id.TextEmail)
         TextNationality = findViewById(R.id.TextNationality)
         SwitchStatus = findViewById(R.id.swStatus)
 
@@ -56,7 +54,7 @@ class PersonForm : AppCompatActivity() {
        /* val btnBack: Button = findViewById(R.id.btnBackNewPerson)
         btnBack.setOnClickListener { finish() }*/
 
-        val btnSearchPerson: ImageButton = findViewById(R.id.btnSearchId_person)
+        val btnSearchPerson: ImageButton = findViewById(R.id.btnSearchId_user)
         btnSearchPerson.setOnClickListener { searchPerson() }
     }
 
