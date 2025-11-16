@@ -23,7 +23,7 @@ class UserController {
         }
     }
 
-    fun updatePerson(user: User){
+    fun updateUser(user: User){
         try {
             dataManager.updateUser(user)
         } catch (e: Exception){
@@ -31,15 +31,15 @@ class UserController {
         }
     }
 
-    fun removePerson(id: String) {
+    fun removeUser(user: User) {
         try {
-            dataManager.removeUser(id)
+            dataManager.removeUser(user)
         } catch (e: Exception){
             throw Exception(context.getString(R.string.ErrorMsgRemove))
         }
     }
 
-    fun getAllPerson(): List<User>{
+    fun getAllUser(): List<User>{
         try {
             return dataManager.getAllUser()
         } catch (e: Exception){
@@ -47,7 +47,7 @@ class UserController {
         }
     }
 
-    fun getByIdPerson(id: String): User? {
+    fun getByIdUser(id: String): User? {
         try {
             return dataManager.getByIdUser(id)
         } catch (e: Exception){

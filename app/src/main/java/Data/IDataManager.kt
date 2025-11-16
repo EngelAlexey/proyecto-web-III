@@ -19,7 +19,7 @@ interface IDataManager {
     //User
     fun addUser(user: User)
     fun updateUser(user: User)
-    fun removeUser(id: String)
+    fun removeUser(user: User)
     fun getAllUser(): List<User>
     fun getByIdUser(id: String): User?
     fun getByUserName(userName: String): User?
