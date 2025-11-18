@@ -19,10 +19,17 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val btn: Button = findViewById(R.id.btnPersonForm)
-        btn.setOnClickListener {
+        val btnStaff: Button = findViewById(R.id.btnPersonForm)
+        btnStaff.setOnClickListener {
             val intent = Intent(this, PersonForm::class.java)
             startActivity(intent)
         }
+
+        val btnClocker: Button = findViewById(R.id.btnClockForm)
+        btnClocker.setOnClickListener {
+            val intent = Intent(this, ClockActivity::class.java)
+            startActivity(intent)
+
     }
+}
 }

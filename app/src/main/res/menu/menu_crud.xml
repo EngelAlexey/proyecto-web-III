@@ -3,13 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/btnSavePerson"
+        android:id="@+id/btnSave"
         android:icon="@android:drawable/ic_menu_save"
         android:title="@string/btnSave"
         app:showAsAction="always|withText" />
 
     <item
-        android:id="@+id/btnDeletePerson"
+        android:id="@+id/btnDelete"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/btnDelete"
         app:showAsAction="always|withText" />

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
         <activity
+            android:name=".ClockActivity"
+            android:exported="false" />
+        <activity
             android:name=".PersonForm"
             android:exported="false" />
         <activity
