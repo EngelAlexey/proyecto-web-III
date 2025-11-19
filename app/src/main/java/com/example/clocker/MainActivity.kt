@@ -29,7 +29,12 @@ class MainActivity : AppCompatActivity() {
         btnClocker.setOnClickListener {
             val intent = Intent(this, ClockActivity::class.java)
             startActivity(intent)
-
     }
+
+        val btnClockRegister: Button = findViewById(R.id.btnClockRegister)
+        btnClockRegister.setOnClickListener {
+            val intent = Intent(this, ClockListActivity::class.java)
+            startActivity(intent)
+        }
 }
 }

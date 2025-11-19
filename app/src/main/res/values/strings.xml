@@ -23,4 +23,5 @@
     <string name="MsgDuplicateDate">Ya existe un registro</string>
     <string name="MsgDelete">Registro eliminado</string>
     <string name="MsgUpdate">Registro actualizado</string>
+    <string name="MsgDataNoFound">No se encontró la información</string>
 </resources>

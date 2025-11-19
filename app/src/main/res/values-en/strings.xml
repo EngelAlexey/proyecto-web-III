@@ -24,4 +24,5 @@
     <string name="MsgDuplicateDate">Already a registry</string>
     <string name="MsgDelete">Record was removed</string>
     <string name="MsgUpdate">Record was updated</string>
+    <string name="MsgDataNoFound">The data was not found</string>
 </resources>

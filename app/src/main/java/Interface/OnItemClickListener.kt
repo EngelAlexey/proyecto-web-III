@@ -1,7 +1,7 @@
 package Interface
 
-import Entity.Person
+import Entity.Clock
 
-interface OnItemClickListener {
-    fun onItemClicked (person: Person)
+interface OnClockItemClickListener {
+    fun onClockItemClicked(clock: Clock)
 }

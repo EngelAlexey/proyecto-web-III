@@ -1,6 +1,7 @@
 package com.example.clocker
 
 import Controller.ClockController
+import Controller.PersonController
 import Entity.Clock
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -19,8 +20,10 @@ import java.time.LocalDate
 class ClockActivity : AppCompatActivity() {
 
     private lateinit var TextID: EditText
+    private lateinit var TextName: EditText
     private lateinit var imgPhoto: ImageView
     private lateinit var clockController: ClockController
+    private lateinit var personController: PersonController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +34,10 @@ class ClockActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         clockController = ClockController(this)
+        personController = PersonController(this)
 
         TextID = findViewById(R.id.TextID)
+        TextName = findViewById(R.id.TextName)
         imgPhoto = findViewById(R.id.imgPhoto)
 
         val btnSelectPhoto = findViewById<ImageButton>(R.id.btnSelectPicture)
@@ -64,6 +69,7 @@ class ClockActivity : AppCompatActivity() {
 
     private fun clear() {
         TextID.text.clear()
+        TextName.setText("")
         imgPhoto.setImageBitmap(null)
     }
 
@@ -91,6 +97,16 @@ class ClockActivity : AppCompatActivity() {
             }
 
             val idPerson = TextID.text.toString().trim()
+            val person = personController.getByIdPerson(idPerson)
+
+            if (person == null) {
+                Toast.makeText(this, R.string.MsgDataNoFound, Toast.LENGTH_LONG).show()
+                TextName.setText("")
+                return
+            } else {
+                TextName.setText("${person.Name} ${person.FLastName} ${person.SLastName}")
+            }
+
             val idClock = System.currentTimeMillis().toString()
 
             val bitmap = (imgPhoto.drawable as BitmapDrawable).bitmap
