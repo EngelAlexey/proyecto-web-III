@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -24,6 +25,13 @@ class ClockActivity : AppCompatActivity() {
     private lateinit var imgPhoto: ImageView
     private lateinit var clockController: ClockController
     private lateinit var personController: PersonController
+
+    private val cameraPreviewLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
+            if (bitmap != null) {
+                imgPhoto.setImageBitmap(bitmap)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +50,21 @@ class ClockActivity : AppCompatActivity() {
 
         val btnSelectPhoto = findViewById<ImageButton>(R.id.btnSelectPicture)
         btnSelectPhoto.setOnClickListener { takePhoto() }
+
+        TextID.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                loadPersonName()
+            }
+        }
+
+        TextID.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                loadPersonName()
+                true
+            } else {
+                false
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -78,27 +101,34 @@ class ClockActivity : AppCompatActivity() {
         return TextID.text.isNotBlank() && drawable?.bitmap != null
     }
 
-    private val cameraPreviewLauncher =
-        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
-            if (bitmap != null) {
-                imgPhoto.setImageBitmap(bitmap)
-            }
-        }
-
     private fun takePhoto() {
         cameraPreviewLauncher.launch(null)
     }
 
+    private fun loadPersonName() {
+        val idPerson = TextID.text.toString().trim()
+        if (idPerson.isBlank()) {
+            TextName.setText("")
+            return
+        }
+        val person = personController.getByIdPerson(idPerson)
+        if (person == null) {
+            Toast.makeText(this, R.string.MsgDataNoFound, Toast.LENGTH_LONG).show()
+            TextName.setText("")
+        } else {
+            TextName.setText("${person.Name} ${person.FLastName} ${person.SLastName}")
+        }
+    }
+
     private fun saveClock() {
         try {
-            if (!isValidate()) {
-                Toast.makeText(this, R.string.ErrorMsgAdd, Toast.LENGTH_LONG).show()
+            val idPerson = TextID.text.toString().trim()
+            if (idPerson.isBlank()) {
+                Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
                 return
             }
 
-            val idPerson = TextID.text.toString().trim()
             val person = personController.getByIdPerson(idPerson)
-
             if (person == null) {
                 Toast.makeText(this, R.string.MsgDataNoFound, Toast.LENGTH_LONG).show()
                 TextName.setText("")
@@ -107,8 +137,12 @@ class ClockActivity : AppCompatActivity() {
                 TextName.setText("${person.Name} ${person.FLastName} ${person.SLastName}")
             }
 
-            val idClock = System.currentTimeMillis().toString()
+            if (!isValidate()) {
+                Toast.makeText(this, R.string.ErrorMsgAdd, Toast.LENGTH_LONG).show()
+                return
+            }
 
+            val idClock = System.currentTimeMillis().toString()
             val bitmap = (imgPhoto.drawable as BitmapDrawable).bitmap
             val dateClock = LocalDate.now()
             val type = ""

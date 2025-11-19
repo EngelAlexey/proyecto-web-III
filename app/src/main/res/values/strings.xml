@@ -24,4 +24,6 @@
     <string name="MsgDelete">Registro eliminado</string>
     <string name="MsgUpdate">Registro actualizado</string>
     <string name="MsgDataNoFound">No se encontró la información</string>
+    <string name="btnClocker">Reloj Marcador</string>
+    <string name="btnRegistersClock">Marcas</string>
 </resources>
