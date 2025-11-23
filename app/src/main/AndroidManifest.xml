@@ -11,6 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
+
+        <!-- ⭐ AGREGAR ESTAS DOS ACTIVITIES -->
+        <activity
+            android:name=".ZoneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ZoneListActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ClockListActivity"
             android:exported="false" />
@@ -25,7 +34,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
