@@ -13,6 +13,7 @@ object MemoryDataManager: IDataManager {
     private var clockList       = mutableListOf<Clock>()
     private var attendancesList  = mutableListOf<Attendances>()
 
+
     //Person
     override fun addPerson(person: Person) {
         personList.add(person)

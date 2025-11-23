@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
         <activity
+            android:name=".ClockListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ClockActivity"
             android:name=".UserActivity"
             android:exported="false" />
         <activity

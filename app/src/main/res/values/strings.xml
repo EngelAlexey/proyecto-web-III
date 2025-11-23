@@ -23,6 +23,9 @@
     <string name="MsgDuplicateDate">Ya existe un registro</string>
     <string name="MsgDelete">Registro eliminado</string>
     <string name="MsgUpdate">Registro actualizado</string>
+    <string name="MsgDataNoFound">No se encontró la información</string>
+    <string name="btnClocker">Reloj Marcador</string>
+    <string name="btnRegistersClock">Marcas</string>
     <string name="chbTypeClock">Reloj</string>
     <string name="chbTypeAdmin">Administrador</string>
     <string name="TextEmail">Correo eléctronico</string>
