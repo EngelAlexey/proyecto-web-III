@@ -4,6 +4,7 @@ import Entity.Attendances
 import Entity.Clock
 import Entity.Person
 import Entity.User
+import Entity.Zone
 import java.util.Date
 
 object MemoryDataManager: IDataManager {
@@ -12,6 +13,7 @@ object MemoryDataManager: IDataManager {
     private var userList        = mutableListOf<User>()
     private var clockList       = mutableListOf<Clock>()
     private var attendancesList  = mutableListOf<Attendances>()
+    private var zoneList        = mutableListOf<Zone>()
 
 
     //Person
@@ -160,12 +162,12 @@ object MemoryDataManager: IDataManager {
     override fun getAllAttendance() = attendancesList
 
     override fun getByIdAttendance(id: String): Attendances? {
-       try {
-           var result = attendancesList.filter { it.idAttendance.trim() == id.trim() }
-           return if (result.any()) result[0] else null
-       } catch (e: Exception){
-           throw e
-       }
+        try {
+            var result = attendancesList.filter { it.idAttendance.trim() == id.trim() }
+            return if (result.any()) result[0] else null
+        } catch (e: Exception){
+            throw e
+        }
     }
 
     override fun getByDateAttendance(dateAttendance: Date): Attendances? {
@@ -186,4 +188,45 @@ object MemoryDataManager: IDataManager {
         }
     }
 
+    //Zone
+    override fun addZone(zone: Zone) {
+        zoneList.add(zone)
+    }
+
+    override fun updateZone(zone: Zone) {
+        removeZone(zone.ID)
+        zoneList.add(zone)
+    }
+
+    override fun removeZone(id: String) {
+        zoneList.removeIf { it.ID.trim() == id.trim() }
+    }
+
+    override fun getAllZone() = zoneList
+
+    override fun getByIdZone(id: String): Zone? {
+        try {
+            var result = zoneList.filter { it.ID.trim() == id.trim() }
+            return if (result.any()) result[0] else null
+        } catch (e: Exception){
+            throw e
+        }
+    }
+
+    override fun getByCodeZone(code: String): Zone? {
+        try {
+            var result = zoneList.filter { it.Code.trim() == code.trim() }
+            return if (result.any()) result[0] else null
+        } catch (e: Exception){
+            throw e
+        }
+    }
+
+    override fun getActiveZones(): List<Zone> {
+        try {
+            return zoneList.filter { it.Status }
+        } catch (e: Exception){
+            throw e
+        }
+    }
 }

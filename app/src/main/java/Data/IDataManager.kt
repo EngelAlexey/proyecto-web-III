@@ -4,6 +4,7 @@ import Entity.Clock
 import Entity.Person
 import Entity.Attendances
 import Entity.User
+import Entity.Zone
 import java.util.Date
 
 interface IDataManager {
@@ -43,4 +44,12 @@ interface IDataManager {
     fun getByDateAttendance(dateAttendance: Date): Attendances?
     fun getByIdPersonAttendance(idPerson: String): Attendances?
 
+    //Zone
+    fun addZone(zone: Zone)
+    fun updateZone(zone: Zone)
+    fun removeZone(id: String)
+    fun getAllZone(): List<Zone>
+    fun getByIdZone(id: String): Zone?
+    fun getByCodeZone(code: String): Zone?
+    fun getActiveZones(): List<Zone>
 }
