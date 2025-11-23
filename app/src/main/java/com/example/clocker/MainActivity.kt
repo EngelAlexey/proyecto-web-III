@@ -36,5 +36,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ClockListActivity::class.java)
             startActivity(intent)
         }
+
+        // ⭐ AGREGAR ESTOS BOTONES DE ZONE
+        val btnZone: Button = findViewById(R.id.btnZone)
+        btnZone.setOnClickListener {
+            val intent = Intent(this, ZoneActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btnZoneList: Button = findViewById(R.id.btnZoneList)
+        btnZoneList.setOnClickListener {
+            val intent = Intent(this, ZoneListActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
