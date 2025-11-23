@@ -16,6 +16,7 @@
             android:exported="false" />
         <activity
             android:name=".ClockActivity"
+            android:name=".UserActivity"
             android:exported="false" />
         <activity
             android:name=".PersonForm"

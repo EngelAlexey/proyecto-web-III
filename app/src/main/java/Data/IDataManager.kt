@@ -3,6 +3,7 @@ package Data
 import Entity.Clock
 import Entity.Person
 import Entity.Attendances
+import Entity.User
 import java.util.Date
 
 interface IDataManager {
@@ -14,6 +15,14 @@ interface IDataManager {
     fun getByIdPerson(id: String): Person?
     fun getByFullNamePerson(fullName: String): Person?
     fun getByIdDocumentPerson(idDocument: String): Person?
+
+    //User
+    fun addUser(user: User)
+    fun updateUser(user: User)
+    fun removeUser(id: String)
+    fun getAllUser(): List<User>
+    fun getByIdUser(id: String): User?
+    fun getByUserName(userName: String): User?
 
     //Clock
     fun addClock(clock: Clock)

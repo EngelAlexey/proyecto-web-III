@@ -3,11 +3,13 @@ package Data
 import Entity.Attendances
 import Entity.Clock
 import Entity.Person
+import Entity.User
 import java.util.Date
 
 object MemoryDataManager: IDataManager {
 
     private var personList      = mutableListOf<Person>()
+    private var userList        = mutableListOf<User>()
     private var clockList       = mutableListOf<Clock>()
     private var attendancesList  = mutableListOf<Attendances>()
 
@@ -49,6 +51,40 @@ object MemoryDataManager: IDataManager {
     override fun getByIdDocumentPerson(idDocument: String): Person? {
         try {
             var result = personList.filter { it.IDDocument.trim() == idDocument.trim() }
+            return if (result.any()) result[0] else null
+        } catch (e: Exception){
+            throw e
+        }
+    }
+
+    //Users
+    override fun addUser(user: User) {
+        userList.add(user)
+    }
+
+    override fun updateUser(user: User) {
+        removeUser(user.ID)
+        userList.add(user)
+    }
+
+    override fun removeUser(id: String) {
+        userList.removeIf { it.ID.trim() == id.trim() }
+    }
+
+    override fun getAllUser() = userList
+
+    override fun getByIdUser(id: String): User? {
+        try {
+            var result = userList.filter { it.ID.trim() == id.trim() }
+            return if (result.any()) result[0] else null
+        } catch (e: Exception){
+            throw e
+        }
+    }
+
+    override fun getByUserName(userName: String): User? {
+        try {
+            var result = userList.filter { it.Name.trim() == userName.trim() }
             return if (result.any()) result[0] else null
         } catch (e: Exception){
             throw e
