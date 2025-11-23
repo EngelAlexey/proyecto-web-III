@@ -19,27 +19,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val btnPerson: Button = findViewById(R.id.btnPersonForm)
-        btnPerson.setOnClickListener {
+        val btnStaff: Button = findViewById(R.id.btnPersonForm)
+        btnStaff.setOnClickListener {
             val intent = Intent(this, PersonForm::class.java)
             startActivity(intent)
         }
 
-        val btnUser: Button = findViewById(R.id.btnUser)
-        btnUser.setOnClickListener {
-            val intent = Intent(this, UserActivity::class.java)
+        val btnClocker: Button = findViewById(R.id.btnClockForm)
+        btnClocker.setOnClickListener {
+            val intent = Intent(this, ClockActivity::class.java)
             startActivity(intent)
         }
 
-        val btnZone: Button = findViewById(R.id.btnZone)
-        btnZone.setOnClickListener {
-            val intent = Intent(this, ZoneActivity::class.java)
-            startActivity(intent)
-        }
-
-        val btnZoneList: Button = findViewById(R.id.btnZoneList)
-        btnZoneList.setOnClickListener {
-            val intent = Intent(this, ZoneListActivity::class.java)
+        val btnClockRegister: Button = findViewById(R.id.btnClockRegister)
+        btnClockRegister.setOnClickListener {
+            val intent = Intent(this, ClockListActivity::class.java)
             startActivity(intent)
         }
     }

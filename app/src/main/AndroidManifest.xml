@@ -12,13 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
         <activity
-            android:name=".ZoneListActivity"
+            android:name=".ClockListActivity"
             android:exported="false" />
         <activity
-            android:name=".ZoneActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UserActivity"
+            android:name=".ClockActivity"
             android:exported="false" />
         <activity
             android:name=".PersonForm"

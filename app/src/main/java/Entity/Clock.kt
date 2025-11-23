@@ -3,6 +3,7 @@ package Entity
 import android.graphics.Bitmap
 import java.time.LocalDate
 import java.util.Date
+import Data.IDataManager
 
 class Clock {
 

@@ -15,6 +15,7 @@ object MemoryDataManager: IDataManager {
     private var attendancesList  = mutableListOf<Attendances>()
     private var zoneList        = mutableListOf<Zone>()
 
+
     //Person
     override fun addPerson(person: Person) {
         personList.add(person)

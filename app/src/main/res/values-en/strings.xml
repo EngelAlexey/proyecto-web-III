@@ -24,6 +24,9 @@
     <string name="MsgDuplicateDate">Already a registry</string>
     <string name="MsgDelete">Record was removed</string>
     <string name="MsgUpdate">Record was updated</string>
+    <string name="MsgDataNoFound">The data was not found</string>
+    <string name="btnClocker">Clocker</string>
+    <string name="btnRegistersClock">Registers</string>
     <string name="chbTypeClock">Clocker</string>
     <string name="chbTypeAdmin">Admin</string>
     <string name="TextEmail">Email address</string>
