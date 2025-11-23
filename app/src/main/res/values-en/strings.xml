@@ -29,4 +29,14 @@
     <string name="TextEmail">Email address</string>
     <string name="TextPassword">Password</string>
     <string name="btnUser">Users</string>
+
+    <!-- Zone Strings -->
+    <string name="btnZone">Zones</string>
+    <string name="btnZoneList">Zone List</string>
+    <string name="TextCode">*Code</string>
+    <string name="TextDescription">*Description</string>
+    <string name="TextStartTime">*Start Time</string>
+    <string name="TextEndTime">*End Time</string>
+    <string name="TitleZoneForm">Zone Form</string>
+    <string name="TitleZoneList">Zone List</string>
 </resources>

@@ -31,5 +31,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val btnZone: Button = findViewById(R.id.btnZone)
+        btnZone.setOnClickListener {
+            val intent = Intent(this, ZoneActivity::class.java)
+            startActivity(intent)
+        }
+
+        val btnZoneList: Button = findViewById(R.id.btnZoneList)
+        btnZoneList.setOnClickListener {
+            val intent = Intent(this, ZoneListActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

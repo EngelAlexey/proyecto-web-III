@@ -28,4 +28,14 @@
     <string name="TextEmail">Correo eléctronico</string>
     <string name="TextPassword">Contraseña</string>
     <string name="btnUser">Usuarios</string>
+
+    <!-- Zone Strings -->
+    <string name="btnZone">Zonas</string>
+    <string name="btnZoneList">Lista de Zonas</string>
+    <string name="TextCode">*Código</string>
+    <string name="TextDescription">*Descripción</string>
+    <string name="TextStartTime">*Hora Inicio</string>
+    <string name="TextEndTime">*Hora Fin</string>
+    <string name="TitleZoneForm">Formulario de Zona</string>
+    <string name="TitleZoneList">Listado de Zonas</string>
 </resources>

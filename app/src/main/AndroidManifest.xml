@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
         <activity
+            android:name=".ZoneListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ZoneActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserActivity"
             android:exported="false" />
         <activity
