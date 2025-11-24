@@ -2,6 +2,7 @@ package com.example.clocker
 
 import Controller.ClockController
 import Controller.PersonController
+import Controller.ZoneController
 import Entity.Clock
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -16,7 +17,10 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 class ClockActivity : AppCompatActivity() {
 
@@ -25,6 +29,7 @@ class ClockActivity : AppCompatActivity() {
     private lateinit var imgPhoto: ImageView
     private lateinit var clockController: ClockController
     private lateinit var personController: PersonController
+    private lateinit var zoneController: ZoneController
 
     private val cameraPreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
@@ -43,6 +48,7 @@ class ClockActivity : AppCompatActivity() {
 
         clockController = ClockController(this)
         personController = PersonController(this)
+        zoneController = ZoneController(this)
 
         TextID = findViewById(R.id.TextID)
         TextName = findViewById(R.id.TextName)
@@ -138,15 +144,39 @@ class ClockActivity : AppCompatActivity() {
             }
 
             if (!isValidate()) {
-                Toast.makeText(this, R.string.ErrorMsgAdd, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Debe ingresar ID y tomar una foto", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            val assignedZone = zoneController.getByCodeZone(person.ZoneCode)
+
+            if (assignedZone == null) {
+                Toast.makeText(this, "La persona no tiene una zona válida asignada.", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            val currentDateTime = LocalDateTime.now()
+
+            val isScheduleValid = zoneController.isClockValidInZone(assignedZone, currentDateTime)
+
+            if (!isScheduleValid) {
+                val dayName = currentDateTime.dayOfWeek.getDisplayName(TextStyle.FULL, Locale("es", "ES"))
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+                if (!assignedZone.Days.contains(currentDateTime.dayOfWeek)) {
+                    Toast.makeText(this, "Marca Inválida: El día $dayName no está permitido en esta zona.", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Marca Inválida: Fuera del horario permitido (${assignedZone.StartTime.format(timeFormatter)} - ${assignedZone.EndTime.format(timeFormatter)})", Toast.LENGTH_LONG).show()
+                }
                 return
             }
 
             val idClock = System.currentTimeMillis().toString()
             val bitmap = (imgPhoto.drawable as BitmapDrawable).bitmap
-            val dateClock = LocalDate.now()
-            val type = ""
-            val address = ""
+            val dateClock = currentDateTime
+
+            val type = "Entrada/Salida"
+            val address = "Dispositivo Móvil"
             val latitude = 0
             val longitude = 0
 
@@ -165,7 +195,7 @@ class ClockActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.MsgSave), Toast.LENGTH_LONG).show()
             clear()
         } catch (e: Exception) {
-            Toast.makeText(this, e.message ?: "", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, e.message ?: "Error desconocido", Toast.LENGTH_LONG).show()
         }
     }
 

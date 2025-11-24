@@ -10,11 +10,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.time.format.DateTimeFormatter
 
 class ZoneListActivity : AppCompatActivity() {
 
     private lateinit var zoneController: ZoneController
     private lateinit var listViewZones: ListView
+    private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +47,7 @@ class ZoneListActivity : AppCompatActivity() {
         try {
             val zones = zoneController.getAllZone()
             val zoneDisplayList = zones.map { zone ->
-                "${zone.Code} - ${zone.Name} (${zone.StartTime} - ${zone.EndTime}) - ${if (zone.Status) "Activa" else "Inactiva"}"
+                "${zone.Code} - ${zone.Name} (${zone.StartTime.format(timeFormatter)} - ${zone.EndTime.format(timeFormatter)}) - ${if (zone.Status) "Activa" else "Inactiva"}"
             }
 
             val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, zoneDisplayList)

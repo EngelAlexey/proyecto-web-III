@@ -5,8 +5,7 @@ import Data.MemoryDataManager
 import Entity.Zone
 import android.content.Context
 import com.example.clocker.R
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
 
 class ZoneController {
 
@@ -73,17 +72,19 @@ class ZoneController {
         }
     }
 
-    fun isClockValidInZone(zone: Zone, clockTime: String): Boolean {
+    fun isClockValidInZone(zone: Zone, clockDateTime: LocalDateTime): Boolean {
         try {
             if (!zone.Status) return false
 
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            val currentTime = LocalTime.parse(clockTime, formatter)
-            val startTime = LocalTime.parse(zone.StartTime, formatter)
-            val endTime = LocalTime.parse(zone.EndTime, formatter)
+            val currentDay = clockDateTime.dayOfWeek
+            if (!zone.Days.contains(currentDay)) {
+                return false
+            }
 
-            return currentTime.isAfter(startTime) && currentTime.isBefore(endTime) ||
-                    currentTime == startTime || currentTime == endTime
+            val clockTime = clockDateTime.toLocalTime()
+            return (clockTime.isAfter(zone.StartTime) && clockTime.isBefore(zone.EndTime)) ||
+                    clockTime == zone.StartTime ||
+                    clockTime == zone.EndTime
         } catch (e: Exception){
             return false
         }

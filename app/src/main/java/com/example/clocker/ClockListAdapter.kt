@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.time.format.DateTimeFormatter
 
 class ClockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var txtPersonId: TextView = view.findViewById(R.id.txtPersonIdItem_recycler)
@@ -17,7 +18,10 @@ class ClockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(item: Clock, clickListener: OnClockItemClickListener) {
         txtPersonId.text = item.IDPerson
-        txtDate.text = item.DateClock.toString()
+
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+        txtDate.text = item.DateClock.format(formatter)
+
         txtType.text = item.Type
         imgPhoto.setImageBitmap(item.Photo)
 

@@ -1,7 +1,9 @@
 package com.example.clocker
 
 import Controller.PersonController
+import Controller.ZoneController
 import Entity.Person
+import Entity.Zone
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.Switch
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -20,10 +23,14 @@ class PersonForm : AppCompatActivity() {
     private lateinit var TextFLastName: EditText
     private lateinit var TextSLastName: EditText
     private lateinit var TextNationality: EditText
+    private lateinit var TextZoneCode: EditText
     private lateinit var SwitchStatus: Switch
     private lateinit var personController: PersonController
+    private lateinit var zoneController: ZoneController
     private var isEditMode: Boolean = false
     private lateinit var btnSearchPerson: ImageButton
+
+    private var zoneList: List<Zone> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,29 +40,56 @@ class PersonForm : AppCompatActivity() {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-
         personController = PersonController(this)
+        zoneController = ZoneController(this)
+
         TextId = findViewById(R.id.TextID)
         TextName = findViewById(R.id.TextName)
         TextFLastName = findViewById(R.id.TextType)
         TextSLastName = findViewById(R.id.TextEmail)
         TextNationality = findViewById(R.id.TextNationality)
+        TextZoneCode = findViewById(R.id.TextZoneCode)
         SwitchStatus = findViewById(R.id.swStatus)
 
-
-      /*
-        val btnSave: Button = findViewById(R.id.btnAddPerson)
-        btnSave.setOnClickListener { savePerson() }
-
-        val btnDelete: Button = findViewById(R.id.btnDeletePerson)
-       */
-
-
-       /* val btnBack: Button = findViewById(R.id.btnBackNewPerson)
-        btnBack.setOnClickListener { finish() }*/
+        setupZonePicker()
 
         val btnSearchPerson: ImageButton = findViewById(R.id.btnSearchId_user)
         btnSearchPerson.setOnClickListener { searchPerson() }
+    }
+
+    private fun setupZonePicker() {
+        TextZoneCode.keyListener = null
+        TextZoneCode.isFocusable = false
+        TextZoneCode.isClickable = true
+
+        TextZoneCode.setOnClickListener {
+            showZoneSelectionDialog()
+        }
+    }
+
+    private fun showZoneSelectionDialog() {
+        try {
+            zoneList = zoneController.getActiveZones()
+
+            if (zoneList.isEmpty()) {
+                Toast.makeText(this, "No hay zonas activas disponibles", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val zoneDisplayArray = zoneList.map { "${it.Code} - ${it.Name}" }.toTypedArray()
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Seleccione una Zona")
+            builder.setItems(zoneDisplayArray) { _, which ->
+                val selectedZone = zoneList[which]
+                TextZoneCode.setText(selectedZone.Code)
+            }
+            builder.setNegativeButton("Cancelar", null)
+            builder.show()
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error al cargar zonas: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -87,16 +121,19 @@ class PersonForm : AppCompatActivity() {
         TextFLastName.text.clear()
         TextSLastName.text.clear()
         TextNationality.text.clear()
+        TextZoneCode.text.clear()
         SwitchStatus.isChecked = false
         isEditMode = false
     }
+
     fun isValidate(): Boolean =
-         TextId.text.isNotBlank() &&
-         TextName.text.isNotBlank() &&
-         TextFLastName.text.isNotBlank() &&
-         TextSLastName.text.isNotBlank() &&
-         TextNationality.text.isNotBlank() &&
-         SwitchStatus.isChecked
+        TextId.text.isNotBlank() &&
+                TextName.text.isNotBlank() &&
+                TextFLastName.text.isNotBlank() &&
+                TextSLastName.text.isNotBlank() &&
+                TextNationality.text.isNotBlank() &&
+                TextZoneCode.text.isNotBlank() &&
+                SwitchStatus.isChecked
 
 
     fun searchPerson() {
@@ -117,6 +154,7 @@ class PersonForm : AppCompatActivity() {
                 TextFLastName.setText(person.FLastName)
                 TextSLastName.setText(person.SLastName)
                 TextNationality.setText(person.Nationality)
+                TextZoneCode.setText(person.ZoneCode)
                 SwitchStatus.isChecked = person.Status
                 isEditMode = true
             }
@@ -142,6 +180,7 @@ class PersonForm : AppCompatActivity() {
                         FLastName = TextFLastName.text.toString()
                         SLastName = TextSLastName.text.toString()
                         Nationality = TextNationality.text.toString()
+                        ZoneCode = TextZoneCode.text.toString()
                         Status = SwitchStatus.isChecked
                     }
 
