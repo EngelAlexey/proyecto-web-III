@@ -79,4 +79,17 @@
         app:layout_constraintTop_toBottomOf="@+id/btnUser"
         app:layout_constraintVertical_bias="0.111" />
 
+    <Button
+        android:id="@+id/btnAttendanceList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Assistances"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.236"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnZone"
+        app:layout_constraintVertical_bias="0.35" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

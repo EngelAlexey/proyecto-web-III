@@ -55,5 +55,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ZoneListActivity::class.java)
             startActivity(intent)
         }
+
+        val btnAttendanceList: Button = findViewById(R.id.btnAttendanceList)
+        btnAttendanceList.setOnClickListener {
+            val intent = Intent(this, AttendanceListActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }

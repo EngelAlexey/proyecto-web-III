@@ -1,30 +1,29 @@
 package Entity
 
-import java.time.LocalDate
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class Attendances {
 
-    private var IDAttendance:       String = ""
-    private var dateAttendance:     LocalDate
-    private var IDPerson:           String = ""
-    private var TimeEntry:          LocalDate
-    private var TimeExit:           LocalDate
-    private var EntryID:            String = ""
-    private var ExitID:             String = ""
+    private var IDAttendance: String = ""
+    private var DateAttendance: Date = Date()
+    private var IDPerson: String = ""
+    private var TimeEntry: Date? = null
+    private var TimeExit: Date? = null
+    private var EntryID: String = ""
+    private var ExitID: String = ""
 
     constructor(
         IDAttendance: String,
-        dateAttendance: LocalDate,
+        DateAttendance: Date,
         IDPerson: String,
-        TimeEntry: LocalDate,
-        TimeExit: LocalDate,
+        TimeEntry: Date?,
+        TimeExit: Date?,
         EntryID: String,
-        ExitID: String)
-
-    {
+        ExitID: String
+    ) {
         this.IDAttendance = IDAttendance
-        this.dateAttendance = dateAttendance
+        this.DateAttendance = DateAttendance
         this.IDPerson = IDPerson
         this.TimeEntry = TimeEntry
         this.TimeExit = TimeExit
@@ -36,19 +35,19 @@ class Attendances {
         get() = this.IDAttendance
         set(value) { this.IDAttendance = value }
 
-    var DateAttendance: LocalDate
-        get() = this.dateAttendance
-        set(value) { this.dateAttendance = value }
+    var dateAttendance: Date
+        get() = this.DateAttendance
+        set(value) { this.DateAttendance = value }
 
     var idPerson: String
         get() = this.IDPerson
         set(value) { this.IDPerson = value }
 
-    var timeEntry: LocalDate
+    var timeEntry: Date?
         get() = this.TimeEntry
         set(value) { this.TimeEntry = value }
 
-    var timeExit: LocalDate
+    var timeExit: Date?
         get() = this.TimeExit
         set(value) { this.TimeExit = value }
 
@@ -60,8 +59,15 @@ class Attendances {
         get() = this.ExitID
         set(value) { this.ExitID = value }
 
-    /*fun HoursAttendance(): Long {
-        return this.TimeExit.time - this.TimeEntry.time
-    }*/
-
+    /**
+     * Minutos trabajados entre la entrada y la salida.
+     * Si no hay ambos valores, regresa 0.
+     */
+    fun hoursAttendanceMinutes(): Long {
+        val start = this.TimeEntry
+        val end = this.TimeExit
+        if (start == null || end == null) return 0L
+        val diffMs = end.time - start.time
+        return TimeUnit.MILLISECONDS.toMinutes(diffMs)
+    }
 }
