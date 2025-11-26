@@ -172,12 +172,13 @@ object MemoryDataManager: IDataManager {
 
     override fun getByDateAttendance(dateAttendance: Date): Attendances? {
         try {
-            var result = attendancesList.filter { it.DateAttendance == dateAttendance }
+            val result = attendancesList.filter { it.dateAttendance == dateAttendance }
             return if (result.any()) result[0] else null
         } catch (e: Exception){
             throw e
         }
     }
+
 
     override fun getByIdPersonAttendance(idPerson: String): Attendances? {
         try {

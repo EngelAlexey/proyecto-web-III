@@ -29,6 +29,10 @@
 
         <!-- Resto de activities -->
         <activity
+            android:name=".AttendanceListActivity"
+            android:exported="false" />
+        <!-- ⭐ AGREGAR ESTAS DOS ACTIVITIES -->
+        <activity
             android:name=".ZoneActivity"
             android:exported="false" />
         <activity
@@ -51,6 +55,14 @@
             android:name=".GestionUsuariosActivity"
             android:exported="false" />
 
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
