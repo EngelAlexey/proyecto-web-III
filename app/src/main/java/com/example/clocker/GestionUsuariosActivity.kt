@@ -57,13 +57,11 @@ class GestionUsuariosActivity : BaseAdminActivity() {
 
         btnVolver?.setOnClickListener {
             Log.d("GestionUsuarios", "Click en btnVolver")
-            Toast.makeText(this, "Volver clickeado", Toast.LENGTH_SHORT).show()
             finish()
         }
 
         btnNuevo?.setOnClickListener {
             Log.d("GestionUsuarios", "Click en btnNuevo")
-            Toast.makeText(this, "Nuevo clickeado", Toast.LENGTH_SHORT).show()
             mostrarDialogoNuevoUsuario()
         }
 
