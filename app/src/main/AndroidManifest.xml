@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
 
-        <!-- LoginActivity - PANTALLA INICIAL -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -22,31 +21,34 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity - YA NO ES LA INICIAL -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
 
-        <!-- Resto de activities -->
         <activity
             android:name=".AttendanceListActivity"
             android:exported="false" />
-        <!-- ⭐ AGREGAR ESTAS DOS ACTIVITIES -->
+
         <activity
             android:name=".ZoneActivity"
             android:exported="false" />
+
         <activity
             android:name=".ZoneListActivity"
             android:exported="false" />
+
         <activity
             android:name=".ClockListActivity"
             android:exported="false" />
+
         <activity
             android:name=".ClockActivity"
             android:exported="false" />
+
         <activity
             android:name=".PersonForm"
             android:exported="false" />
+
         <activity
             android:name=".MenuAdministradorActivity"
             android:exported="false" />
@@ -55,14 +57,6 @@
             android:name=".GestionUsuariosActivity"
             android:exported="false" />
 
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
