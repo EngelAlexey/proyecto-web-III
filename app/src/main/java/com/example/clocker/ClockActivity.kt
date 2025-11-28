@@ -4,6 +4,7 @@ import Controller.ClockController
 import Controller.PersonController
 import Controller.ZoneController
 import Entity.Clock
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
@@ -16,7 +17,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -30,6 +35,7 @@ class ClockActivity : AppCompatActivity() {
     private lateinit var clockController: ClockController
     private lateinit var personController: PersonController
     private lateinit var zoneController: ZoneController
+    private lateinit var sessionManager: SessionManager
 
     private val cameraPreviewLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap: Bitmap? ->
@@ -43,8 +49,18 @@ class ClockActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_clock)
 
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        sessionManager = SessionManager(this)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         clockController = ClockController(this)
         personController = PersonController(this)
@@ -89,11 +105,47 @@ class ClockActivity : AppCompatActivity() {
                 true
             }
             R.id.btnCancel -> {
-                finish()
+                manejarSalida()
+                true
+            }
+            android.R.id.home -> {
+                manejarSalida()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        manejarSalida()
+        return true
+    }
+
+    override fun onBackPressed() {
+        manejarSalida()
+    }
+
+    private fun manejarSalida() {
+        if (sessionManager.esReloj()) {
+            mostrarDialogoCerrarSesion()
+        } else {
+            finish()
+        }
+    }
+
+    private fun mostrarDialogoCerrarSesion() {
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Desea cerrar sesión y volver al inicio?")
+            .setPositiveButton("Sí") { _, _ ->
+                sessionManager.cerrarSesion()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun clear() {
