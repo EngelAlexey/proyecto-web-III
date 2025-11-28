@@ -55,6 +55,7 @@
         android:alignmentMode="alignBounds"
         android:layout_gravity="center">
 
+
         <!-- Botón Gestión de Usuarios -->
         <Button
             android:id="@+id/btnGestionUsuarios"
@@ -99,6 +100,20 @@
             android:textSize="16sp"
             android:backgroundTint="#FF9800"/>
 
+        <Button
+            android:id="@+id/btnConsultaAvanzada"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:text="Consulta\nAvanzada"
+            android:textSize="16sp"
+            android:backgroundTint="#8BC34A"/>
+
+
+
+
+
         <!-- Botón Reportes -->
         <Button
             android:id="@+id/btnReportes"
@@ -120,6 +135,8 @@
             android:text="Pantalla de\nMarca"
             android:textSize="16sp"
             android:backgroundTint="#607D8B"/>
+
+
 
     </GridLayout>
 

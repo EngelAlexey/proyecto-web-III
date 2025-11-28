@@ -16,6 +16,7 @@ object MemoryDataManager: IDataManager {
     private var zoneList        = mutableListOf<Zone>()
 
 
+
     //Person
     override fun addPerson(person: Person) {
         personList.add(person)
@@ -188,6 +189,34 @@ object MemoryDataManager: IDataManager {
             throw e
         }
     }
+
+    fun getAttendanceByPerson(idPerson: String): List<Attendances> {
+        return attendancesList.filter { it.idPerson == idPerson }
+    }
+
+    fun getAttendanceByDateRange(start: Date, end: Date): List<Attendances> {
+        return attendancesList.filter {
+            it.dateAttendance >= start && it.dateAttendance <= end
+        }
+    }
+
+    fun getAttendanceIncomplete(): List<Attendances> {
+        return attendancesList.filter {
+            it.timeEntry != null && it.timeExit == null
+        }
+    }
+
+    fun getAttendanceComplete(): List<Attendances> {
+        return attendancesList.filter {
+            it.timeEntry != null && it.timeExit != null
+        }
+    }
+
+
+    fun getAllAttendances(): List<Attendances> {
+        return attendancesList
+    }
+
 
     //Zone
     override fun addZone(zone: Zone) {

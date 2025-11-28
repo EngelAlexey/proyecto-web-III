@@ -75,6 +75,12 @@ class MenuAdministradorActivity : AppCompatActivity() {
             val intent = Intent(this, AttendanceListActivity::class.java)
             startActivity(intent)
         }
+        // Botón Consulta Avanzada de Asistencias
+        findViewById<Button>(R.id.btnConsultaAvanzada).setOnClickListener {
+            val intent = Intent(this, AttendanceQueryActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // Botón Reportes
         findViewById<Button>(R.id.btnReportes).setOnClickListener {
