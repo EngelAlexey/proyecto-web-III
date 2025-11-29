@@ -26,6 +26,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ReportActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".AttendanceListActivity"
             android:exported="false" />
 

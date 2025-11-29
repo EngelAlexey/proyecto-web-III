@@ -13,6 +13,9 @@ class Attendances {
     private var EntryID: String = ""
     private var ExitID: String = ""
 
+    // 🔥 Nuevo campo → Zona de la asistencia
+    private var IDZone: String = ""
+
     constructor(
         IDAttendance: String,
         DateAttendance: Date,
@@ -20,7 +23,8 @@ class Attendances {
         TimeEntry: Date?,
         TimeExit: Date?,
         EntryID: String,
-        ExitID: String
+        ExitID: String,
+        IDZone: String        // ← 🔥 agregar al constructor
     ) {
         this.IDAttendance = IDAttendance
         this.DateAttendance = DateAttendance
@@ -29,6 +33,7 @@ class Attendances {
         this.TimeExit = TimeExit
         this.EntryID = EntryID
         this.ExitID = ExitID
+        this.IDZone = IDZone     // ← 🔥 nuevo
     }
 
     var idAttendance: String
@@ -59,10 +64,12 @@ class Attendances {
         get() = this.ExitID
         set(value) { this.ExitID = value }
 
-    /**
-     * Minutos trabajados entre la entrada y la salida.
-     * Si no hay ambos valores, regresa 0.
-     */
+    // 🔥 Getter/Setter de zona
+    var idZone: String
+        get() = this.IDZone
+        set(value) { this.IDZone = value }
+
+
     fun hoursAttendanceMinutes(): Long {
         val start = this.TimeEntry
         val end = this.TimeExit

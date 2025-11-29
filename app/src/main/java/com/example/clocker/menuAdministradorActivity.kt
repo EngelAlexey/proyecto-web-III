@@ -78,8 +78,10 @@ class MenuAdministradorActivity : AppCompatActivity() {
 
         // Botón Reportes
         findViewById<Button>(R.id.btnReportes).setOnClickListener {
-            Toast.makeText(this, "Módulo de Reportes (en desarrollo)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ReportActivity::class.java)
+            startActivity(intent)
         }
+
 
         // Botón Pantalla de Marca
         findViewById<Button>(R.id.btnPantallaMarca).setOnClickListener {
