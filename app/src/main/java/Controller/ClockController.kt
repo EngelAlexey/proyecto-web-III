@@ -19,6 +19,7 @@ class ClockController {
     fun addClock(clock: Clock) {
         try {
             dataManager.addClock(clock)
+            AttendanceController.processClockMark(clock)
         } catch (e: Exception) {
             throw Exception(context.getString(R.string.ErrorMsgAdd))
         }
