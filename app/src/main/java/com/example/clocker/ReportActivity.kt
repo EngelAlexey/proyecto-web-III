@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import Controller.ReportController
 import Data.MemoryDataManager
 import Entity.ReportRow
@@ -22,15 +23,31 @@ class ReportActivity : AppCompatActivity() {
 
     private val adapter = ReportAdapter()
 
+    // 🔥 AGREGAR ESTAS VARIABLES
+    private lateinit var rvReport: RecyclerView
+    private lateinit var btnFrom: Button
+    private lateinit var btnTo: Button
+    private lateinit var btnGenerate: Button
+    private lateinit var btnExportPDF: Button
+    private lateinit var btnSelectPersons: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
 
-        // Configurar RecyclerView
+        // 🔥 CONECTAR LAS VISTAS DEL XML
+        rvReport = findViewById(R.id.rvReport)
+        btnFrom = findViewById(R.id.btnFrom)
+        btnTo = findViewById(R.id.btnTo)
+        btnGenerate = findViewById(R.id.btnGenerate)
+        btnExportPDF = findViewById(R.id.btnExportPDF)
+        btnSelectPersons = findViewById(R.id.btnSelectPersons)
+
+        // CONFIGURAR RECYCLER
         rvReport.layoutManager = LinearLayoutManager(this)
         rvReport.adapter = adapter
 
-        // Botón desde
+        // BOTONES
         btnFrom.setOnClickListener {
             pickDate { date ->
                 fromDate = date
@@ -38,7 +55,6 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
-        // Botón hasta
         btnTo.setOnClickListener {
             pickDate { date ->
                 toDate = date
@@ -46,19 +62,11 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
-        // Botón generar reporte
-        btnGenerate.setOnClickListener {
-            generarReporte()
-        }
+        btnGenerate.setOnClickListener { generarReporte() }
 
-        // Botón exportar PDF
-        btnExportPDF.setOnClickListener {
-            exportarPDF()
-        }
+        btnExportPDF.setOnClickListener { exportarPDF() }
 
-        // BOTÓN SELECCIONAR PERSONAS
         btnSelectPersons.setOnClickListener {
-            // Aquí luego agregamos el selector de personas (si lo quieres)
             Toast.makeText(this, "Módulo de selección pronto", Toast.LENGTH_SHORT).show()
         }
     }

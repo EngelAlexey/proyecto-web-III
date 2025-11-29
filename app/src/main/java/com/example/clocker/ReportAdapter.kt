@@ -19,16 +19,14 @@ class ReportAdapter : RecyclerView.Adapter<ReportAdapter.ViewHolder>() {
     fun getData(): List<ReportRow> = data
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val txtPerson: TextView = itemView.findViewById(R.id.txtPerson)
-        val txtDate: TextView = itemView.findViewById(R.id.txtDate)
-        val txtEntry: TextView = itemView.findViewById(R.id.txtEntry)
-        val txtExit: TextView = itemView.findViewById(R.id.txtExit)
-        val txtHours: TextView = itemView.findViewById(R.id.txtHours)
+        val txtPerson: TextView = itemView.findViewById(R.id.txtPersonIdItem_recycler)
+        val txtDate: TextView = itemView.findViewById(R.id.txtDateItem_recycler)
+        val txtType: TextView = itemView.findViewById(R.id.txtTypeItem_recycler)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_report_row, parent, false)
+            .inflate(R.layout.activity_item_clock, parent, false)
         return ViewHolder(view)
     }
 
@@ -39,8 +37,6 @@ class ReportAdapter : RecyclerView.Adapter<ReportAdapter.ViewHolder>() {
 
         holder.txtPerson.text = row.personName
         holder.txtDate.text = row.date
-        holder.txtEntry.text = row.timeEntry ?: "-"
-        holder.txtExit.text = row.timeExit ?: "-"
-        holder.txtHours.text = row.hoursWorked ?: "-"
+        holder.txtType.text = row.hoursWorked ?: "-"   // No existe "tipo", así que usamos algo del ReportRow
     }
 }
