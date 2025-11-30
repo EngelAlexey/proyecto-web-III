@@ -50,7 +50,19 @@ class AttendanceQueryActivity : AppCompatActivity() {
         txtTotals = findViewById(R.id.txtTotals)
         recycler = findViewById(R.id.recyclerAttendance)
 
-        adapter = AttendanceListAdapterSimple(emptyList())
+        personsList = personController.getAllPerson().filter { it.Status }
+
+        adapter = AttendanceListAdapterSimple(
+            emptyList(),
+            personsList
+        )
+
+        adapter = AttendanceListAdapterSimple(
+            emptyList(),
+            personsList
+        )
+
+
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
