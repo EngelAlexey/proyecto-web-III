@@ -1,8 +1,10 @@
 package com.example.clocker
 
+import Controller.PersonController
 import Data.IDataManager
 import Data.MemoryDataManager
 import Entity.Attendances
+import Entity.Person
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.*
@@ -11,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.appcompat.app.AlertDialog
 
 class AttendanceQueryActivity : AppCompatActivity() {
 
     private lateinit var dataManager: IDataManager
+    private lateinit var personController: PersonController
 
-    private lateinit var txtID: EditText
+    private lateinit var btnSelectPersons: Button
     private lateinit var btnStart: Button
     private lateinit var btnEnd: Button
     private lateinit var btnSearch: Button
@@ -29,13 +33,17 @@ class AttendanceQueryActivity : AppCompatActivity() {
 
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
 
+    private var personsList: List<Person> = emptyList()
+    private val selectedPersonIds = mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_attendance_query)
 
         dataManager = MemoryDataManager
+        personController = PersonController(this)
 
-        txtID = findViewById(R.id.txtPersonID)
+        btnSelectPersons = findViewById(R.id.btnSelectPersons)
         btnStart = findViewById(R.id.btnStartDate)
         btnEnd = findViewById(R.id.btnEndDate)
         btnSearch = findViewById(R.id.btnSearch)
@@ -46,15 +54,43 @@ class AttendanceQueryActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
+        personsList = personController.getAllPerson()
+
+        btnSelectPersons.setOnClickListener { showPersonSelector() }
         btnStart.setOnClickListener { pickDate(true) }
         btnEnd.setOnClickListener { pickDate(false) }
         btnSearch.setOnClickListener { search() }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<Button>(R.id.btnExportPdf).setOnClickListener { exportPdf() }
+    }
 
-        findViewById<Button>(R.id.btnExportPdf).setOnClickListener {
-            exportPdf()
-        }
+    private fun showPersonSelector() {
+        val names = personsList.map { "${it.ID} - ${it.FullName()}" }.toTypedArray()
+        val checkedItems = personsList.map { selectedPersonIds.contains(it.ID) }.toBooleanArray()
+
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar Personas")
+            .setMultiChoiceItems(names, checkedItems) { _, which, isChecked ->
+                val id = personsList[which].ID
+                if (isChecked) {
+                    selectedPersonIds.add(id)
+                } else {
+                    selectedPersonIds.remove(id)
+                }
+            }
+            .setPositiveButton("Aceptar") { _, _ ->
+                if (selectedPersonIds.isEmpty()) {
+                    btnSelectPersons.text = "Seleccionar Personas"
+                } else if (selectedPersonIds.size == 1) {
+                    val person = personsList.firstOrNull { it.ID == selectedPersonIds[0] }
+                    btnSelectPersons.text = person?.FullName() ?: "1 persona seleccionada"
+                } else {
+                    btnSelectPersons.text = "${selectedPersonIds.size} personas seleccionadas"
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun pickDate(isStart: Boolean) {
@@ -81,11 +117,10 @@ class AttendanceQueryActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        val idPerson = txtID.text.toString().trim()
         var list: List<Attendances> = dataManager.getAllAttendance()
 
-        if (idPerson.isNotEmpty()) {
-            list = list.filter { it.idPerson == idPerson }
+        if (selectedPersonIds.isNotEmpty()) {
+            list = list.filter { selectedPersonIds.contains(it.idPerson) }
         }
 
         if (startDate != null && endDate != null) {
@@ -113,14 +148,15 @@ class AttendanceQueryActivity : AppCompatActivity() {
             return
         }
 
-        val personName = if (txtID.text.isNotEmpty()) txtID.text.toString() else null
-        val zoneName = null  // si luego agregamos filtro por zona, se llena aquí
+        val personName =
+            if (selectedPersonIds.isEmpty()) null
+            else "${selectedPersonIds.size} persona(s)"
 
         val file = Util.AttendancePdfGenerator.generate(
             this,
             list,
             personName,
-            zoneName,
+            null,
             startDate,
             endDate
         )
