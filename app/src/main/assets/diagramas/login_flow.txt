@@ -1,0 +1,4 @@
+graph TD;
+    A[Usuario abre App] --> B{¿Tiene sesión?};
+    B -- Sí --> C[Home];
+    B -- No --> D[Login Screen];
