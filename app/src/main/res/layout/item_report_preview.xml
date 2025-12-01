@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardReportItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Ícono del Reporte -->
+        <ImageView
+            android:id="@+id/ivReportIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_report"
+            android:padding="8dp"
+            app:tint="?attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="Ícono de reporte" />
+
+        <!-- Nombre del Reporte -->
+        <TextView
+            android:id="@+id/tvReportName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Reporte Mensual de Abril"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#212121"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/ivReportIcon"
+            app:layout_constraintEnd_toStartOf="@id/ivMoreOptions"
+            app:layout_constraintTop_toTopOf="@id/ivReportIcon"
+            tools:text="Reporte Mensual por Persona - Abril 2025" />
+
+        <!-- Tipo de Reporte -->
+        <TextView
+            android:id="@+id/tvReportType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mensual"
+            android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="?attr/colorPrimary"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toEndOf="@id/ivReportIcon"
+            app:layout_constraintTop_toBottomOf="@id/tvReportName"
+            tools:text="Mensual" />
+
+        <!-- Menú de Opciones -->
+        <ImageButton
+            android:id="@+id/ivMoreOptions"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="#757575"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="Más opciones" />
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivReportIcon" />
+
+        <!-- Información del Reporte -->
+        <LinearLayout
+            android:id="@+id/layoutReportInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider">
+
+            <!-- Rango de Fechas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tvDateRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📅 01/04/2025 - 30/04/2025"
+                    android:textSize="13sp"
+                    android:textColor="#757575"
+                    tools:text="📅 01/04/2025 - 30/04/2025" />
+
+            </LinearLayout>
+
+            <!-- Fecha de Generación -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tvGeneratedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🕐 Generado hace 2 horas"
+                    android:textSize="13sp"
+                    android:textColor="#757575"
+                    tools:text="🕐 Generado: 28/11/2025 14:30" />
+
+            </LinearLayout>
+
+            <!-- Estadísticas (Grid) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:background="#F5F5F5"
+                android:padding="12dp">
+
+                <!-- Total Registros -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvTotalRecords"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="450"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary"
+                        tools:text="450" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Registros"
+                        android:textSize="11sp"
+                        android:textColor="#757575" />
+
+                </LinearLayout>
+
+                <!-- Total Personas -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvTotalPersons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary"
+                        tools:text="15" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personas"
+                        android:textSize="11sp"
+                        android:textColor="#757575" />
+
+                </LinearLayout>
+
+                <!-- Total Horas -->
+                <LinearLayout
+                    android:id="@+id/layoutTotalHours"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvTotalHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="360h"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary"
+                        tools:text="360h" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Horas"
+                        android:textSize="11sp"
+                        android:textColor="#757575" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Botones de Acción -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutReportInfo">
+
+            <!-- Botón Ver -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewReport"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ver"
+                android:textSize="13sp"
+                android:layout_marginEnd="4dp" />
+
+            <!-- Botón Exportar PDF -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExportPDF"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PDF"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_export_pdf"
+                app:iconSize="18dp" />
+
+        </LinearLayout>
+
+        <!-- Indicador de PDF Exportado -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipPdfExported"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓ PDF Exportado"
+            android:textSize="11sp"
+            app:chipIconSize="16dp"
+            app:chipBackgroundColor="#E8F5E9"
+            app:chipStrokeWidth="0dp"
+            android:textColor="#2E7D32"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutActions"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

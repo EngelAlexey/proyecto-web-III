@@ -19,7 +19,8 @@ class ClockController {
     fun addClock(clock: Clock) {
         try {
             dataManager.addClock(clock)
-            AttendanceController.processClockMark(clock)
+            // TODO: Implementar procesamiento de marcas de asistencia
+            // AttendanceController.processClockMark(clock)
         } catch (e: Exception) {
             throw Exception(context.getString(R.string.ErrorMsgAdd))
         }

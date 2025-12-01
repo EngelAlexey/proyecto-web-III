@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Ruta para archivos en Downloads (donde se guardan los PDFs) -->
+    <external-path
+        name="external_files"
+        path="Download/" />
+
+    <!-- Ruta para archivos en el directorio interno de la app -->
+    <files-path
+        name="app_files"
+        path="." />
+
+    <!-- Ruta para archivos temporales en cache -->
+    <cache-path
+        name="cache_files"
+        path="." />
+
+    <!-- Ruta para archivos externos de la app (Android/data/) -->
+    <external-files-path
+        name="external_app_files"
+        path="." />
+
+</paths>

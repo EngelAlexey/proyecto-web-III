@@ -42,4 +42,150 @@
     <string name="TextEndTime">*End Time</string>
     <string name="TitleZoneForm">Zone Form</string>
     <string name="TitleZoneList">Zone List</string>
+
+    <!-- Report Module Strings -->
+    <string name="module_reports">Reports Module</string>
+    <string name="report_preview_title">Report Preview</string>
+
+    <!-- Report Filters -->
+    <string name="filter_configure">Configure Filters</string>
+    <string name="filter_applied">Applied Filters</string>
+    <string name="filter_date_range">Date Range</string>
+    <string name="filter_start_date">Start Date</string>
+    <string name="filter_end_date">End Date</string>
+    <string name="filter_persons">Persons</string>
+    <string name="filter_zones">Zones</string>
+    <string name="filter_all_persons">All persons</string>
+    <string name="filter_all_zones">All zones</string>
+    <string name="filter_select">Select</string>
+    <string name="filter_reset">Reset</string>
+    <string name="filter_apply">Apply Filters</string>
+
+    <!-- Quick Date Filters -->
+    <string name="quick_today">Today</string>
+    <string name="quick_this_week">This Week</string>
+    <string name="quick_this_month">This Month</string>
+
+    <!-- Report Options -->
+    <string name="report_options">Report Options</string>
+    <string name="option_include_hours">Include hours worked</string>
+    <string name="option_include_late">Include late arrivals</string>
+    <string name="option_include_absences">Include absences</string>
+    <string name="option_include_photos">Include photographs</string>
+
+    <!-- Group By Options -->
+    <string name="group_by">Group Data By</string>
+    <string name="group_by_person">By Person</string>
+    <string name="group_by_day">By Day</string>
+    <string name="group_by_zone">By Zone</string>
+
+    <!-- Report Templates -->
+    <string name="templates_predefined">Predefined Templates</string>
+    <string name="templates_description">Generate reports quickly with these templates</string>
+    <string name="template_monthly">Monthly</string>
+    <string name="template_weekly">Weekly</string>
+    <string name="template_daily">Daily</string>
+    <string name="template_hours">Hours</string>
+    <string name="template_late">Late Arrivals</string>
+
+    <!-- Report Actions -->
+    <string name="action_generate_report">Generate Custom Report</string>
+    <string name="action_export_pdf">Export PDF</string>
+    <string name="action_share">Share</string>
+    <string name="action_view">View</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_delete_old">Clean Old</string>
+    <string name="action_help">Help</string>
+
+    <!-- Report History -->
+    <string name="report_history">Report History</string>
+    <string name="report_empty_title">No reports generated</string>
+    <string name="report_empty_description">Generate your first report using filters or templates</string>
+
+    <!-- Report Statistics -->
+    <string name="stats_summary">Statistical Summary</string>
+    <string name="stats_total_records">Records</string>
+    <string name="stats_total_persons">Persons</string>
+    <string name="stats_total_hours">Hours</string>
+    <string name="stats_total_late">Late</string>
+    <string name="stats_total_absences">Absences</string>
+
+    <!-- Report Preview -->
+    <string name="preview_first_records">First Records</string>
+    <string name="preview_showing">Showing %1$d of %2$d</string>
+    <string name="preview_see_complete">See complete report for more details</string>
+
+    <!-- Export Options -->
+    <string name="export_options">Export Options</string>
+    <string name="export_description">The report can be exported in PDF format with all complete data.</string>
+    <string name="export_filename">Filename</string>
+    <string name="export_location">Location</string>
+    <string name="export_downloads">Downloads</string>
+
+    <!-- Messages -->
+    <string name="msg_generating_report">Generating report…</string>
+    <string name="msg_exporting_pdf">Exporting to PDF…</string>
+    <string name="msg_report_generated">Report generated successfully</string>
+    <string name="msg_pdf_exported">PDF exported: %1$s</string>
+    <string name="msg_error_generate">Error generating report: %1$s</string>
+    <string name="msg_error_export">Error exporting: %1$s</string>
+    <string name="msg_invalid_filters">The selected filters are not valid</string>
+    <string name="msg_invalid_date_range">The date range is not valid</string>
+    <string name="msg_date_range_too_long">The range cannot be longer than 1 year</string>
+    <string name="msg_future_dates">Dates cannot be in the future</string>
+    <string name="msg_history_updated">History updated</string>
+    <string name="msg_report_deleted">Report deleted</string>
+    <string name="msg_reports_deleted">%1$d reports deleted</string>
+
+    <!-- Sort Options -->
+    <string name="sort_by_date">By Date</string>
+    <string name="sort_by_name">By Name</string>
+    <string name="sort_by_type">By Type</string>
+    <string name="sorted_by">Sorted by %1$s</string>
+
+    <!-- Report Types -->
+    <string name="report_type_monthly">Monthly</string>
+    <string name="report_type_weekly">Weekly</string>
+    <string name="report_type_daily">Daily</string>
+    <string name="report_type_hours">Hours Worked</string>
+    <string name="report_type_late">Late Arrivals</string>
+    <string name="report_type_general">General</string>
+
+    <!-- Report Status -->
+    <string name="status_generating">Generating…</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_failed">Failed</string>
+    <string name="status_exported">Exported</string>
+    <string name="status_pdf_exported">PDF Exported</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_delete_old_title">Delete Old Reports</string>
+    <string name="dialog_delete_old_message">Delete all reports older than 3 months?</string>
+    <string name="dialog_help_title">Help - Reports Module</string>
+    <string name="dialog_help_message">1. Select a date range\n2. Configure filters (persons, zones)\n3. Choose a template or generate custom\n4. Review the preview\n5. Export to PDF or share\n\nYou can view previous reports in the history.</string>
+
+    <!-- Buttons -->
+    <string name="btn_generate">Generate</string>
+    <string name="btn_export">Export</string>
+    <string name="btn_open_pdf">Open PDF</string>
+    <string name="btn_close">Close</string>
+    <string name="btn_understood">Understood</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_report_icon">Report icon</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_close_dialog">Close</string>
+    <string name="cd_generate_report">Generate new report</string>
+
+    <!-- Period Labels -->
+    <string name="period_label">Period</string>
+    <string name="generated_label">Generated</string>
+    <string name="generated_ago">Generated %1$s</string>
+
+    <!-- Report Menu Actions -->
+
+    <string name="action_filter">Filters</string>
+
+
 </resources>

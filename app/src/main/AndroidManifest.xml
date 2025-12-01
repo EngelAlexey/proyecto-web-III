@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisos para generar y compartir PDFs -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,9 +18,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clocker">
-        <activity
-            android:name=".AttendanceListAdapterSimple"
-            android:exported="false" />
+
+        <!-- ❌ ELIMINA ESTA LÍNEA -->
+        <!-- <activity android:name=".AttendanceListAdapterSimple" android:exported="false" /> -->
+
         <activity
             android:name=".AttendanceQueryActivity"
             android:exported="false" />
@@ -53,6 +61,25 @@
         <activity
             android:name=".GestionUsuariosActivity"
             android:exported="false" />
+
+        <!-- Activity del Módulo de Reportes -->
+        <activity
+            android:name=".ReportActivity"
+            android:exported="false"
+            android:label="@string/module_reports"
+            android:theme="@style/Theme.Clocker" />
+
+        <!-- FileProvider para compartir PDFs -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

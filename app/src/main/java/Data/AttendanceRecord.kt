@@ -5,7 +5,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-data class AttendanceController(
+/**
+ * AttendanceRecord - Adaptador de Attendances para reportes
+ * Mapea la clase Entity.Attendances al formato esperado por PDFGenerator
+ */
+data class AttendanceRecord(
     val id: String,
     val personId: String,
     val personName: String,
@@ -22,15 +26,20 @@ data class AttendanceController(
         private val dateFmt = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
         private val timeFmt = SimpleDateFormat("HH:mm", Locale("es", "ES"))
 
+        /**
+         * Convierte Entity.Attendances a AttendanceRecord
+         */
         fun fromAttendances(
             attendance: Attendances,
             personName: String,
             zoneName: String,
             expectedClockIn: Date? = null
         ): AttendanceRecord {
+            // Calcular horas trabajadas
             val minutes = attendance.hoursAttendanceMinutes()
             val hoursWorked = minutes / 60.0
 
+            // Calcular si llegó tarde
             var isLate = false
             var lateMinutes = 0
 
@@ -59,7 +68,9 @@ data class AttendanceController(
     }
 
     fun getFormattedDate(): String = dateFmt.format(date)
+
     fun getFormattedClockIn(): String = clockIn?.let { timeFmt.format(it) } ?: "--:--"
+
     fun getFormattedClockOut(): String = clockOut?.let { timeFmt.format(it) } ?: "--:--"
 
     fun getFormattedHours(): String {

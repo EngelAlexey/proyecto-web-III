@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:context=".ReportActivity">
+
+    <!-- AppBar con Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Módulo de Reportes"
+            app:titleTextColor="@android:color/white"
+            app:menu="@menu/menu_report" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Contenido Principal -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Tarjeta de Filtros -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardFilters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Título de Filtros -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_filter"
+                            app:tint="?attr/colorPrimary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Filtros de Reporte"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginStart="12dp" />
+
+                        <!-- ✅ BOTÓN CONFIGURAR OCULTO -->
+                        <Button
+                            android:id="@+id/btnOpenFilters"
+                            style="@style/Widget.Material3.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Configurar"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <!-- Resumen de Filtros Actuales - AHORA CLICABLES -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="#F5F5F5"
+                        android:padding="12dp">
+
+                        <!-- ✅ PERÍODO - Clicable -->
+                        <TextView
+                            android:id="@+id/tvDateRange"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Período: 01/12/2025 - 31/12/2025"
+                            android:textSize="14sp"
+                            android:textColor="#616161"
+                            android:padding="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:drawableEnd="@android:drawable/ic_menu_edit"
+                            android:drawablePadding="8dp"
+                            android:layout_marginBottom="4dp" />
+
+                        <!-- ✅ PERSONAS - Clicable -->
+                        <TextView
+                            android:id="@+id/tvPersonsFilter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Personas: Todas las personas"
+                            android:textSize="14sp"
+                            android:textColor="#616161"
+                            android:padding="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:drawableEnd="@android:drawable/ic_menu_edit"
+                            android:drawablePadding="8dp"
+                            android:layout_marginBottom="4dp" />
+
+                        <!-- ✅ ZONAS - Clicable -->
+                        <TextView
+                            android:id="@+id/tvZonesFilter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Zonas: Todas las zonas"
+                            android:textSize="14sp"
+                            android:textColor="#616161"
+                            android:padding="8dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:drawableEnd="@android:drawable/ic_menu_edit"
+                            android:drawablePadding="8dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tarjeta de Plantillas Predefinidas -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTemplates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Plantillas Predefinidas"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#212121"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Genera reportes rápidamente con estas plantillas"
+                        android:textSize="13sp"
+                        android:textColor="#757575"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Grid de Plantillas (Manual) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <!-- Fila 1 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTemplateMonthly"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="📅 Mensual"
+                                android:textSize="13sp"
+                                android:padding="12dp"
+                                android:layout_marginEnd="4dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTemplateWeekly"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="📊 Semanal"
+                                android:textSize="13sp"
+                                android:padding="12dp"
+                                android:layout_marginStart="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Fila 2 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="8dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTemplateDaily"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="📋 Diario"
+                                android:textSize="13sp"
+                                android:padding="12dp"
+                                android:layout_marginEnd="4dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnTemplateHours"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="⏱️ Horas"
+                                android:textSize="13sp"
+                                android:padding="12dp"
+                                android:layout_marginStart="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Fila 3 -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTemplateLate"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="⚠️ Atrasos"
+                            android:textSize="13sp"
+                            android:padding="12dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botón Generar Reporte Personalizado -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGenerateCustomReport"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="📄 Generar Reporte Personalizado"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                app:icon="@drawable/ic_report"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="24dp"
+                style="@style/Widget.Material3.Button" />
+
+            <!-- Título Historial -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Historial de Reportes"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="12dp" />
+
+            <!-- RecyclerView para historial de reportes -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvReportHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                tools:listitem="@layout/item_report_preview"
+                tools:itemCount="3" />
+
+            <!-- Mensaje cuando no hay reportes -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/ic_report"
+                    android:alpha="0.3"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No hay reportes generados"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#757575"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Genera tu primer reporte usando los filtros o plantillas"
+                    android:textSize="14sp"
+                    android:textColor="#9E9E9E"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FloatingActionButton para generar reporte -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGenerateReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_report"
+        app:tint="@android:color/white"
+        android:contentDescription="Generar nuevo reporte" />
+
+    <!-- ProgressBar para loading -->
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center">
+
+                <ProgressBar
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/tvLoadingMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Generando reporte..."
+                    android:textSize="14sp"
+                    android:textColor="#212121" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </FrameLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

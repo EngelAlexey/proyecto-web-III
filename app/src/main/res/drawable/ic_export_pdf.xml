@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Ícono de PDF con flecha de descarga/exportar -->
+
+    <!-- Documento base -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M14,2H6C4.9,2 4,2.9 4,4v16c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2V8L14,2z"/>
+
+    <!-- Esquina doblada del documento -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"
+        android:pathData="M14,2v6h6L14,2z"/>
+
+    <!-- Texto "PDF" -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,12h1.5v1.5h-1.5z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10.5,12h1.5v1.5h-1.5z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M13,12h1.5v1.5h-1.5z"/>
+
+    <!-- Flecha de descarga/exportar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11,15v-3h2v3h1.5l-2.5,2.5l-2.5,-2.5z"/>
+
+</vector>
