@@ -6,7 +6,6 @@
     android:padding="16dp"
     android:background="#F5F5F5">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +34,6 @@
             android:backgroundTint="#D32F2F"/>
     </LinearLayout>
 
-    <!-- Título -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,17 +44,14 @@
         android:gravity="center"
         android:layout_marginBottom="24dp"/>
 
-    <!-- Grid de botones -->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="3"
+        android:rowCount="4"
         android:alignmentMode="alignBounds"
         android:layout_gravity="center">
 
-
-        <!-- Botón Gestión de Usuarios -->
         <Button
             android:id="@+id/btnGestionUsuarios"
             android:layout_width="0dp"
@@ -67,7 +62,6 @@
             android:textSize="16sp"
             android:backgroundTint="#673AB7"/>
 
-        <!-- Botón Gestión de Zonas -->
         <Button
             android:id="@+id/btnGestionZonas"
             android:layout_width="0dp"
@@ -78,7 +72,6 @@
             android:textSize="16sp"
             android:backgroundTint="#3F51B5"/>
 
-        <!-- Botón Gestión de Personal -->
         <Button
             android:id="@+id/btnGestionPersonal"
             android:layout_width="0dp"
@@ -89,7 +82,6 @@
             android:textSize="16sp"
             android:backgroundTint="#009688"/>
 
-        <!-- Botón Ver Asistencias -->
         <Button
             android:id="@+id/btnVerAsistencias"
             android:layout_width="0dp"
@@ -110,11 +102,6 @@
             android:textSize="16sp"
             android:backgroundTint="#8BC34A"/>
 
-
-
-
-
-        <!-- Botón Reportes -->
         <Button
             android:id="@+id/btnReportes"
             android:layout_width="0dp"
@@ -125,7 +112,6 @@
             android:textSize="16sp"
             android:backgroundTint="#F44336"/>
 
-        <!-- Botón Pantalla de Marca (para pruebas) -->
         <Button
             android:id="@+id/btnPantallaMarca"
             android:layout_width="0dp"
@@ -136,7 +122,15 @@
             android:textSize="16sp"
             android:backgroundTint="#607D8B"/>
 
-
+        <Button
+            android:id="@+id/btnDocumentacion"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:text="Ver\nDocumentación"
+            android:textSize="16sp"
+            android:backgroundTint="#00BCD4"/>
 
     </GridLayout>
 
