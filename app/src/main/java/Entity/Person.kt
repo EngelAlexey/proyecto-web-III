@@ -64,5 +64,5 @@ class Person {
         get() = this.status
         set(value) { this.status = value }
 
-    fun FullName() = "$this.name $this.fLastName $this.sLastName"
+    fun FullName() = "$name $fLastName $sLastName"
 }

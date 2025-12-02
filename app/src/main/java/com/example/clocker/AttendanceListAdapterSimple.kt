@@ -1,7 +1,7 @@
 package com.example.clocker
 
 import Entity.Attendances
-import android.graphics.Color
+import Entity.Person
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,20 +11,19 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AttendanceListAdapterSimple(
-    private var items: List<Attendances>
+    var itemsList: List<Attendances>,
+    private val persons: List<Person>
 ) : RecyclerView.Adapter<AttendanceListAdapterSimple.ViewHolder>() {
-
-    val itemsList: List<Attendances>
-        get() = items
 
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
     private val timeFmt = SimpleDateFormat("HH:mm", Locale("es", "ES"))
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtDate: TextView = view.findViewById(R.id.txtDate)
         val txtEntry: TextView = view.findViewById(R.id.txtEntry)
         val txtExit: TextView = view.findViewById(R.id.txtExit)
         val txtHours: TextView = view.findViewById(R.id.txtHours)
+        val txtPersonInfo: TextView = view.findViewById(R.id.txtPersonInfo)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,27 +32,31 @@ class AttendanceListAdapterSimple(
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = itemsList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val att = items[position]
+        val att = itemsList[position]
 
+        // Fecha
         holder.txtDate.text = formatter.format(att.dateAttendance)
+
+        // Buscar persona por ID
+        val person = persons.firstOrNull { it.ID == att.idPerson }
+        val fullName = person?.FullName() ?: "Desconocido"
+        val cedula = person?.ID ?: "N/A"
+        holder.txtPersonInfo.text = "$fullName — $cedula"
+
+        // Entrada / Salida
         holder.txtEntry.text = att.timeEntry?.let { timeFmt.format(it) } ?: "--"
         holder.txtExit.text = att.timeExit?.let { timeFmt.format(it) } ?: "--"
 
+        // Horas trabajadas
         val minutes = att.hoursAttendanceMinutes()
         holder.txtHours.text = "${minutes / 60}h ${minutes % 60}m"
-
-        if (att.timeEntry != null && att.timeExit != null) {
-            holder.itemView.setBackgroundColor(Color.parseColor("#C8E6C9")) // verde claro
-        } else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFF9C4")) // amarillo claro
-        }
     }
 
     fun update(newList: List<Attendances>) {
-        items = newList
+        itemsList = newList
         notifyDataSetChanged()
     }
 }
