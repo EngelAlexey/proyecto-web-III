@@ -62,13 +62,13 @@ class ReportRepositoryImpl(
         Log.d("ReportRepository", "Grupos encontrados: ${groupedByPersonAndDate.size}")
 
         groupedByPersonAndDate.forEach { (key, clocks) ->
-            val (personId, date) = key
+            val (personId, dateOnly) = key
 
             // Verificar si está en el rango del filtro
-            val dateInRange = !date.before(filter.startDate) && !date.after(filter.endDate)
+            val dateInRange = !dateOnly.before(filter.startDate) && !dateOnly.after(filter.endDate)
 
             if (!dateInRange) {
-                Log.d("ReportRepository", "Fecha fuera de rango: $date")
+                Log.d("ReportRepository", "Fecha fuera de rango: $dateOnly")
                 return@forEach
             }
 
@@ -105,36 +105,38 @@ class ReportRepositoryImpl(
                 convertToDate(it.DateClock).time
             }
 
-            // Primera marca = entrada, última marca = salida
-            val clockInDate = sortedClocks.firstOrNull()?.let { convertToDate(it.DateClock) }
-            val clockOutDate = if (sortedClocks.size > 1) {
+            // ✅ PRIMERA MARCA = ENTRADA (con su fecha y hora real)
+            val clockInFull = sortedClocks.firstOrNull()?.let { convertToDate(it.DateClock) }
+
+            // ✅ ÚLTIMA MARCA = SALIDA (con su fecha y hora real)
+            val clockOutFull = if (sortedClocks.size > 1) {
                 sortedClocks.lastOrNull()?.let { convertToDate(it.DateClock) }
             } else {
                 null
             }
 
-            // Calcular horas trabajadas
-            val hoursWorked = if (clockInDate != null && clockOutDate != null) {
-                calculateHoursBetweenDates(clockInDate, clockOutDate)
+            // ✅ CALCULAR HORAS TRABAJADAS
+            val hoursWorked = if (clockInFull != null && clockOutFull != null) {
+                calculateHoursBetweenDates(clockInFull, clockOutFull)
             } else {
                 0.0
             }
 
-            // Determinar si hubo atraso
-            val (isLate, lateMinutes) = if (clockInDate != null && zone != null) {
-                checkIfLateDate(clockInDate, zone.StartTime.toString())
+            // ✅ DETERMINAR SI HUBO ATRASO (usando la hora real de entrada)
+            val (isLate, lateMinutes) = if (clockInFull != null && zone != null) {
+                checkIfLateDate(clockInFull, zone.StartTime.toString())
             } else {
                 Pair(false, 0)
             }
 
-            // Crear registro de asistencia
+            // ✅ CREAR REGISTRO CON DATOS REALES
             val record = AttendanceRecord(
                 id = UUID.randomUUID().toString(),
                 personId = personId,
                 personName = personName,
-                date = date,
-                clockIn = clockInDate,
-                clockOut = clockOutDate,
+                date = dateOnly, // Fecha sin hora (para agrupación)
+                clockIn = clockInFull, // ✅ FECHA Y HORA REAL DE ENTRADA
+                clockOut = clockOutFull, // ✅ FECHA Y HORA REAL DE SALIDA
                 hoursWorked = hoursWorked,
                 isLateArrival = isLate,
                 lateMinutes = lateMinutes,
@@ -157,7 +159,7 @@ class ReportRepositoryImpl(
 
             if (personMatch && zoneMatch) {
                 attendanceRecords.add(record)
-                Log.d("ReportRepository", "Registro agregado: $personName - $date")
+                Log.d("ReportRepository", "✅ Registro: $personName - Entrada: $clockInFull - Salida: $clockOutFull")
             }
         }
 

@@ -1,70 +1,152 @@
-package com.example.clocker.Data
+package Controller
 
+import Data.MemoryDataManager
 import Entity.Attendances
-import java.text.SimpleDateFormat
+import Entity.Clock
+import android.content.Context
+import android.util.Log
+import com.example.clocker.R
+import java.time.ZoneId
 import java.util.*
-import java.util.concurrent.TimeUnit
 
-data class AttendanceController(
-    val id: String,
-    val personId: String,
-    val personName: String,
-    val date: Date,
-    val clockIn: Date?,
-    val clockOut: Date?,
-    val zoneId: String,
-    val zoneName: String,
-    val hoursWorked: Double,
-    val isLateArrival: Boolean,
-    val lateMinutes: Int
-) {
-    companion object {
-        private val dateFmt = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
-        private val timeFmt = SimpleDateFormat("HH:mm", Locale("es", "ES"))
+/**
+ * AttendanceController - Procesa marcas de Clock y las agrupa en Attendances
+ *
+ * Flujo:
+ * 1. Primera marca del día = Entrada (crea nueva Attendance)
+ * 2. Segunda marca del día = Salida (actualiza Attendance existente)
+ */
+class AttendanceController(private val context: Context) {
 
-        fun fromAttendances(
-            attendance: Attendances,
-            personName: String,
-            zoneName: String,
-            expectedClockIn: Date? = null
-        ): AttendanceRecord {
-            val minutes = attendance.hoursAttendanceMinutes()
-            val hoursWorked = minutes / 60.0
+    private val dataManager = MemoryDataManager
 
-            var isLate = false
-            var lateMinutes = 0
+    /**
+     * Procesa una marca de reloj y la convierte en asistencia
+     *
+     * @param clock Marca de reloj (entrada o salida)
+     */
+    fun processClockMark(clock: Clock) {
+        try {
+            Log.d("AttendanceController", "🔄 Procesando marca de ${clock.IDPerson}")
 
-            if (expectedClockIn != null && attendance.timeEntry != null) {
-                val diff = attendance.timeEntry!!.time - expectedClockIn.time
-                if (diff > 0) {
-                    isLate = true
-                    lateMinutes = TimeUnit.MILLISECONDS.toMinutes(diff).toInt()
+            // Convertir fecha del Clock a Date
+            val clockDate = Date.from(clock.DateClock.atZone(ZoneId.systemDefault()).toInstant())
+
+            // ✅ BUSCAR ASISTENCIA ABIERTA (sin salida) DE ESTA PERSONA
+            val openAttendance = dataManager.getAllAttendance()
+                .firstOrNull { attendance ->
+                    attendance.idPerson == clock.IDPerson &&
+                            attendance.timeExit == null // Sin salida registrada
                 }
+
+            if (openAttendance == null) {
+                // ✅ PRIMERA MARCA = ENTRADA (crear nueva asistencia)
+                createNewAttendance(clock, clockDate)
+                Log.d("AttendanceController", "✅ Nueva asistencia creada (ENTRADA)")
+            } else {
+                // ✅ SEGUNDA MARCA = SALIDA (actualizar asistencia existente)
+                updateAttendanceExit(openAttendance, clock, clockDate)
+                Log.d("AttendanceController", "✅ Asistencia actualizada (SALIDA)")
             }
 
-            return AttendanceRecord(
-                id = attendance.idAttendance,
-                personId = attendance.idPerson,
-                personName = personName,
-                date = attendance.dateAttendance,
-                clockIn = attendance.timeEntry,
-                clockOut = attendance.timeExit,
-                zoneId = attendance.entryID,
-                zoneName = zoneName,
-                hoursWorked = hoursWorked,
-                isLateArrival = isLate,
-                lateMinutes = lateMinutes
-            )
+        } catch (e: Exception) {
+            Log.e("AttendanceController", "❌ Error procesando marca: ${e.message}", e)
+            throw Exception(context.getString(R.string.ErrorMsgAdd))
         }
     }
 
-    fun getFormattedDate(): String = dateFmt.format(date)
-    fun getFormattedClockIn(): String = clockIn?.let { timeFmt.format(it) } ?: "--:--"
-    fun getFormattedClockOut(): String = clockOut?.let { timeFmt.format(it) } ?: "--:--"
+    /**
+     * Crea nueva asistencia con marca de entrada
+     */
+    private fun createNewAttendance(clock: Clock, clockDateTime: Date) {
+        // Usar fecha de la marca como fecha de asistencia (sin resetear hora)
+        val newAttendance = Attendances(
+            IDAttendance = UUID.randomUUID().toString(),
+            DateAttendance = clockDateTime, // ✅ Fecha REAL de entrada
+            IDPerson = clock.IDPerson,
+            TimeEntry = clockDateTime,
+            TimeExit = null,
+            EntryID = clock.IDClock,
+            ExitID = ""
+        )
 
-    fun getFormattedHours(): String {
-        val h = hoursWorked.toInt()
-        val m = ((hoursWorked - h) * 60).toInt()
-        return "${h}h ${m}m"
+        dataManager.addAttendance(newAttendance)
+
+        Log.d("AttendanceController", """
+            📥 ENTRADA REGISTRADA:
+            - Persona: ${clock.IDPerson}
+            - Fecha/Hora: $clockDateTime
+        """.trimIndent())
+    }
+
+    /**
+     * Actualiza asistencia existente con marca de salida
+     */
+    private fun updateAttendanceExit(attendance: Attendances, clock: Clock, clockDateTime: Date) {
+        attendance.timeExit = clockDateTime
+        attendance.exitID = clock.IDClock
+
+        dataManager.updateAttendance(attendance)
+
+        val hoursWorked = attendance.hoursAttendanceMinutes() / 60.0
+
+        Log.d("AttendanceController", """
+            📤 SALIDA REGISTRADA:
+            - Persona: ${clock.IDPerson}
+            - Hora entrada: ${attendance.timeEntry}
+            - Hora salida: $clockDateTime
+            - Horas trabajadas: ${hoursWorked}h
+        """.trimIndent())
+    }
+
+    /**
+     * Verifica si dos fechas son del mismo día
+     */
+    private fun isSameDay(date1: Date, date2: Date): Boolean {
+        val cal1 = Calendar.getInstance()
+        cal1.time = date1
+
+        val cal2 = Calendar.getInstance()
+        cal2.time = date2
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
+
+    /**
+     * Obtiene todas las asistencias
+     */
+    fun getAllAttendances(): List<Attendances> {
+        return dataManager.getAllAttendance()
+    }
+
+    /**
+     * Obtiene asistencias de una persona
+     */
+    fun getAttendancesByPerson(personId: String): List<Attendances> {
+        return dataManager.getAllAttendance().filter { it.idPerson == personId }
+    }
+
+    /**
+     * Obtiene asistencias de un rango de fechas
+     */
+    fun getAttendancesByDateRange(startDate: Date, endDate: Date): List<Attendances> {
+        return dataManager.getAllAttendance().filter { attendance ->
+            !attendance.dateAttendance.before(startDate) &&
+                    !attendance.dateAttendance.after(endDate)
+        }
+    }
+
+    /**
+     * Elimina una asistencia
+     */
+    fun deleteAttendance(attendanceId: String) {
+        try {
+            dataManager.removeAttendance(attendanceId)
+            Log.d("AttendanceController", "🗑️ Asistencia eliminada: $attendanceId")
+        } catch (e: Exception) {
+            Log.e("AttendanceController", "❌ Error eliminando asistencia: ${e.message}", e)
+            throw Exception(context.getString(R.string.ErrorMsgRemove))
+        }
     }
 }

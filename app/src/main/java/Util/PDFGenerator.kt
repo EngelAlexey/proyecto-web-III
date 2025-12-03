@@ -32,7 +32,7 @@ object PDFGenerator {
     private const val MARGIN_LEFT = 40f
     private const val MARGIN_RIGHT = 40f
     private const val MARGIN_TOP = 60f
-    private const val LINE_HEIGHT = 20f
+    private const val LINE_HEIGHT = 18f
 
     /**
      * Genera un archivo PDF completo del reporte
@@ -57,42 +57,20 @@ object PDFGenerator {
         // Dibujar filtros aplicados
         yPosition = drawFilters(canvas, report, yPosition)
 
-        // Dibujar resumen general
-        yPosition = drawSummary(canvas, report, yPosition)
-
-        // Determinar qué tipo de contenido mostrar según el tipo de reporte
-        when (report.reportType) {
-            "MONTHLY", "GENERAL" -> {
-                // Mostrar resumen por persona
-                if (report.summaryByPerson.isNotEmpty()) {
-                    yPosition = drawPersonSummaryTable(canvas, report.summaryByPerson, yPosition)
+        // ✅ NUEVA TABLA DETALLADA - Reemplaza el resumen general
+        if (report.attendanceRecords.isNotEmpty()) {
+            yPosition = drawDetailedAttendanceTable(canvas, report.attendanceRecords, yPosition)
+        } else {
+            // Si no hay registros, mostrar mensaje
+            canvas.drawText(
+                "No hay registros de asistencia en el período seleccionado",
+                MARGIN_LEFT,
+                yPosition,
+                Paint().apply {
+                    textSize = 12f
+                    color = Color.GRAY
                 }
-            }
-            "WEEKLY" -> {
-                // Mostrar resumen por día
-                if (report.summaryByDay.isNotEmpty()) {
-                    yPosition = drawDaySummaryTable(canvas, report.summaryByDay, yPosition)
-                }
-            }
-            "DAILY" -> {
-                // Mostrar detalle de asistencias
-                if (report.attendanceRecords.isNotEmpty()) {
-                    yPosition = drawAttendanceDetailTable(canvas, report.attendanceRecords, yPosition)
-                }
-            }
-            "HOURS" -> {
-                // Mostrar solo horas trabajadas por persona
-                if (report.summaryByPerson.isNotEmpty()) {
-                    yPosition = drawHoursTable(canvas, report.summaryByPerson, yPosition)
-                }
-            }
-            "LATE" -> {
-                // Mostrar solo atrasos
-                val lateRecords = report.attendanceRecords.filter { it.isLateArrival }
-                if (lateRecords.isNotEmpty()) {
-                    yPosition = drawLateArrivalsTable(canvas, lateRecords, yPosition)
-                }
-            }
+            )
         }
 
         // Dibujar pie de página
@@ -203,9 +181,15 @@ object PDFGenerator {
     }
 
     /**
-     * Dibuja el resumen general del reporte
+     * ✅ NUEVA TABLA DETALLADA CON TODA LA INFORMACIÓN
+     * Muestra: Nombre, Fecha Entrada, Hora Entrada, Distancia, Biometría,
+     *          Fecha Salida, Hora Salida, Horas Trabajadas
      */
-    private fun drawSummary(canvas: Canvas, report: Report, startY: Float): Float {
+    private fun drawDetailedAttendanceTable(
+        canvas: Canvas,
+        records: List<AttendanceRecord>,
+        startY: Float
+    ): Float {
         var y = startY
 
         val titlePaint = Paint().apply {
@@ -214,263 +198,113 @@ object PDFGenerator {
             color = Color.BLACK
         }
 
-        val valuePaint = Paint().apply {
-            textSize = 11f
-            typeface = Typeface.DEFAULT
-            color = Color.DKGRAY
-        }
-
-        // Título de sección
-        canvas.drawText("RESUMEN GENERAL:", MARGIN_LEFT, y, titlePaint)
-        y += LINE_HEIGHT
-
-        // Total de registros
-        canvas.drawText("Total de registros:", MARGIN_LEFT + 10f, y, valuePaint)
-        canvas.drawText(report.totalRecords.toString(), MARGIN_LEFT + 200f, y, valuePaint)
-        y += LINE_HEIGHT
-
-        // Total de personas
-        canvas.drawText("Total de personas:", MARGIN_LEFT + 10f, y, valuePaint)
-        canvas.drawText(report.totalPersons.toString(), MARGIN_LEFT + 200f, y, valuePaint)
-        y += LINE_HEIGHT
-
-        // Total de horas trabajadas
-        if (report.filter.includeHours) {
-            canvas.drawText("Total horas trabajadas:", MARGIN_LEFT + 10f, y, valuePaint)
-            canvas.drawText(formatHours(report.totalHoursWorked), MARGIN_LEFT + 200f, y, valuePaint)
-            y += LINE_HEIGHT
-        }
-
-        // Total de atrasos
-        if (report.filter.includeLateArrivals) {
-            canvas.drawText("Total de atrasos:", MARGIN_LEFT + 10f, y, valuePaint)
-            canvas.drawText(report.totalLateArrivals.toString(), MARGIN_LEFT + 200f, y, valuePaint)
-            y += LINE_HEIGHT
-        }
-
-        // Total de ausencias
-        if (report.filter.includeAbsences) {
-            canvas.drawText("Total de ausencias:", MARGIN_LEFT + 10f, y, valuePaint)
-            canvas.drawText(report.totalAbsences.toString(), MARGIN_LEFT + 200f, y, valuePaint)
-            y += LINE_HEIGHT
-        }
-
-        y += 20f
-
-        return y
-    }
-
-    /**
-     * Dibuja tabla de resumen por persona
-     */
-    private fun drawPersonSummaryTable(canvas: Canvas, summaries: List<PersonSummary>, startY: Float): Float {
-        var y = startY
-
         val headerPaint = Paint().apply {
-            textSize = 10f
+            textSize = 8f
             typeface = Typeface.DEFAULT_BOLD
-            color = Color.BLACK
+            color = Color.WHITE
         }
 
         val cellPaint = Paint().apply {
-            textSize = 9f
+            textSize = 7f
             typeface = Typeface.DEFAULT
             color = Color.DKGRAY
         }
 
-        // Título de sección
-        canvas.drawText("RESUMEN POR PERSONA:", MARGIN_LEFT, y, headerPaint)
-        y += LINE_HEIGHT
+        val backgroundPaint = Paint().apply {
+            color = Color.parseColor("#673AB7") // Color morado
+        }
 
-        // Encabezados de tabla
-        canvas.drawText("Nombre", MARGIN_LEFT, y, headerPaint)
-        canvas.drawText("Días", MARGIN_LEFT + 180f, y, headerPaint)
-        canvas.drawText("Presente", MARGIN_LEFT + 230f, y, headerPaint)
-        canvas.drawText("Ausente", MARGIN_LEFT + 300f, y, headerPaint)
-        canvas.drawText("Atrasos", MARGIN_LEFT + 370f, y, headerPaint)
-        canvas.drawText("Horas", MARGIN_LEFT + 430f, y, headerPaint)
-        y += LINE_HEIGHT
-
-        // Línea separadora
-        canvas.drawLine(MARGIN_LEFT, y, PAGE_WIDTH - MARGIN_RIGHT, y, Paint().apply {
+        val linePaint = Paint().apply {
             strokeWidth = 1f
             color = Color.LTGRAY
-        })
+        }
+
+        // Título de sección
+        canvas.drawText("DETALLE DE ASISTENCIAS:", MARGIN_LEFT, y, titlePaint)
+        y += LINE_HEIGHT + 5f
+
+        // Dibujar fondo de encabezado
+        canvas.drawRect(
+            MARGIN_LEFT,
+            y - 12f,
+            PAGE_WIDTH - MARGIN_RIGHT,
+            y + 5f,
+            backgroundPaint
+        )
+
+        // Encabezados de tabla
+        canvas.drawText("Nombre", MARGIN_LEFT + 2f, y, headerPaint)
+        canvas.drawText("F.Entrada", MARGIN_LEFT + 100f, y, headerPaint)
+        canvas.drawText("H.Entrada", MARGIN_LEFT + 180f, y, headerPaint)
+        canvas.drawText("F.Salida", MARGIN_LEFT + 250f, y, headerPaint)
+        canvas.drawText("H.Salida", MARGIN_LEFT + 330f, y, headerPaint)
+        canvas.drawText("Horas", MARGIN_LEFT + 400f, y, headerPaint)
+        canvas.drawText("Estado", MARGIN_LEFT + 460f, y, headerPaint)
+        y += 18f
+
+        // Línea separadora después del encabezado
+        canvas.drawLine(MARGIN_LEFT, y, PAGE_WIDTH - MARGIN_RIGHT, y, linePaint)
         y += 5f
 
-        // Datos
-        summaries.forEach { summary ->
-            canvas.drawText(summary.personName, MARGIN_LEFT, y, cellPaint)
-            canvas.drawText(summary.totalDays.toString(), MARGIN_LEFT + 180f, y, cellPaint)
-            canvas.drawText(summary.presentDays.toString(), MARGIN_LEFT + 230f, y, cellPaint)
-            canvas.drawText(summary.absentDays.toString(), MARGIN_LEFT + 300f, y, cellPaint)
-            canvas.drawText(summary.lateArrivals.toString(), MARGIN_LEFT + 370f, y, cellPaint)
-            canvas.drawText(summary.getFormattedTotalHours(), MARGIN_LEFT + 430f, y, cellPaint)
-            y += LINE_HEIGHT
-        }
-
-        y += 20f
-        return y
-    }
-
-    /**
-     * Dibuja tabla de resumen por día
-     */
-    private fun drawDaySummaryTable(canvas: Canvas, summaries: List<DaySummary>, startY: Float): Float {
-        var y = startY
-
-        val headerPaint = Paint().apply {
-            textSize = 10f
-            typeface = Typeface.DEFAULT_BOLD
-            color = Color.BLACK
-        }
-
-        val cellPaint = Paint().apply {
-            textSize = 9f
-            typeface = Typeface.DEFAULT
-            color = Color.DKGRAY
-        }
-
-        // Título
-        canvas.drawText("RESUMEN POR DÍA:", MARGIN_LEFT, y, headerPaint)
-        y += LINE_HEIGHT
-
-        // Encabezados
-        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
-        canvas.drawText("Total", MARGIN_LEFT + 150f, y, headerPaint)
-        canvas.drawText("Presente", MARGIN_LEFT + 220f, y, headerPaint)
-        canvas.drawText("Ausente", MARGIN_LEFT + 300f, y, headerPaint)
-        canvas.drawText("Atrasos", MARGIN_LEFT + 380f, y, headerPaint)
-        y += LINE_HEIGHT
-
-        // Datos
-        summaries.forEach { summary ->
-            canvas.drawText(summary.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
-            canvas.drawText(summary.totalPersons.toString(), MARGIN_LEFT + 150f, y, cellPaint)
-            canvas.drawText(summary.presentPersons.toString(), MARGIN_LEFT + 220f, y, cellPaint)
-            canvas.drawText(summary.absentPersons.toString(), MARGIN_LEFT + 300f, y, cellPaint)
-            canvas.drawText(summary.lateArrivals.toString(), MARGIN_LEFT + 380f, y, cellPaint)
-            y += LINE_HEIGHT
-        }
-
-        y += 20f
-        return y
-    }
-
-    /**
-     * Dibuja tabla de detalle de asistencias
-     */
-    private fun drawAttendanceDetailTable(canvas: Canvas, records: List<AttendanceRecord>, startY: Float): Float {
-        var y = startY
-
-        val headerPaint = Paint().apply {
-            textSize = 10f
-            typeface = Typeface.DEFAULT_BOLD
-            color = Color.BLACK
-        }
-
-        val cellPaint = Paint().apply {
-            textSize = 9f
-            typeface = Typeface.DEFAULT
-            color = Color.DKGRAY
-        }
-
-        // Título
-        canvas.drawText("DETALLE DE ASISTENCIAS:", MARGIN_LEFT, y, headerPaint)
-        y += LINE_HEIGHT
-
-        // Encabezados
-        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
-        canvas.drawText("Persona", MARGIN_LEFT + 100f, y, headerPaint)
-        canvas.drawText("Entrada", MARGIN_LEFT + 250f, y, headerPaint)
-        canvas.drawText("Salida", MARGIN_LEFT + 330f, y, headerPaint)
-        canvas.drawText("Horas", MARGIN_LEFT + 410f, y, headerPaint)
-        y += LINE_HEIGHT
-
-        // Datos
-        records.take(30).forEach { record -> // Límite de 30 registros por página
-            canvas.drawText(record.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
-            canvas.drawText(record.personName, MARGIN_LEFT + 100f, y, cellPaint)
-            canvas.drawText(record.getFormattedClockIn(), MARGIN_LEFT + 250f, y, cellPaint)
-            canvas.drawText(record.getFormattedClockOut(), MARGIN_LEFT + 330f, y, cellPaint)
-            canvas.drawText(record.getFormattedHours(), MARGIN_LEFT + 410f, y, cellPaint)
-            y += LINE_HEIGHT
-        }
-
-        y += 20f
-        return y
-    }
-
-    /**
-     * Dibuja tabla de solo horas trabajadas
-     */
-    private fun drawHoursTable(canvas: Canvas, summaries: List<PersonSummary>, startY: Float): Float {
-        var y = startY
-
-        val headerPaint = Paint().apply {
-            textSize = 10f
-            typeface = Typeface.DEFAULT_BOLD
-            color = Color.BLACK
-        }
-
-        val cellPaint = Paint().apply {
-            textSize = 9f
-            typeface = Typeface.DEFAULT
-            color = Color.DKGRAY
-        }
-
-        canvas.drawText("HORAS TRABAJADAS POR PERSONA:", MARGIN_LEFT, y, headerPaint)
-        y += LINE_HEIGHT
-
-        canvas.drawText("Persona", MARGIN_LEFT, y, headerPaint)
-        canvas.drawText("Total Horas", MARGIN_LEFT + 250f, y, headerPaint)
-        canvas.drawText("Promedio/Día", MARGIN_LEFT + 370f, y, headerPaint)
-        y += LINE_HEIGHT
-
-        summaries.forEach { summary ->
-            canvas.drawText(summary.personName, MARGIN_LEFT, y, cellPaint)
-            canvas.drawText(summary.getFormattedTotalHours(), MARGIN_LEFT + 250f, y, cellPaint)
-            canvas.drawText(formatHours(summary.averageHoursPerDay), MARGIN_LEFT + 370f, y, cellPaint)
-            y += LINE_HEIGHT
-        }
-
-        y += 20f
-        return y
-    }
-
-    /**
-     * Dibuja tabla de atrasos
-     */
-    private fun drawLateArrivalsTable(canvas: Canvas, records: List<AttendanceRecord>, startY: Float): Float {
-        var y = startY
-
-        val headerPaint = Paint().apply {
-            textSize = 10f
-            typeface = Typeface.DEFAULT_BOLD
-            color = Color.BLACK
-        }
-
-        val cellPaint = Paint().apply {
-            textSize = 9f
-            typeface = Typeface.DEFAULT
-            color = Color.DKGRAY
-        }
-
-        canvas.drawText("ATRASOS REGISTRADOS:", MARGIN_LEFT, y, headerPaint)
-        y += LINE_HEIGHT
-
-        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
-        canvas.drawText("Persona", MARGIN_LEFT + 100f, y, headerPaint)
-        canvas.drawText("Entrada", MARGIN_LEFT + 250f, y, headerPaint)
-        canvas.drawText("Retraso", MARGIN_LEFT + 350f, y, headerPaint)
-        y += LINE_HEIGHT
-
+        // Datos de cada registro
         records.forEach { record ->
-            canvas.drawText(record.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
-            canvas.drawText(record.personName, MARGIN_LEFT + 100f, y, cellPaint)
-            canvas.drawText(record.getFormattedClockIn(), MARGIN_LEFT + 250f, y, cellPaint)
-            canvas.drawText("${record.lateMinutes} min", MARGIN_LEFT + 350f, y, cellPaint)
+            // Nombre (truncado si es muy largo)
+            val displayName = if (record.personName.length > 15) {
+                record.personName.substring(0, 15) + "..."
+            } else {
+                record.personName
+            }
+            canvas.drawText(displayName, MARGIN_LEFT + 2f, y, cellPaint)
+
+            // Fecha de entrada (REAL de clockIn)
+            val entryDate = if (record.clockIn != null) {
+                SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES")).format(record.clockIn)
+            } else {
+                "--/--/----"
+            }
+            canvas.drawText(entryDate, MARGIN_LEFT + 100f, y, cellPaint)
+
+            // Hora de entrada
+            canvas.drawText(record.getFormattedClockIn(), MARGIN_LEFT + 180f, y, cellPaint)
+
+            // Fecha de salida (REAL de clockOut)
+            val exitDate = if (record.clockOut != null) {
+                SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES")).format(record.clockOut)
+            } else {
+                "--/--/----"
+            }
+            canvas.drawText(exitDate, MARGIN_LEFT + 250f, y, cellPaint)
+
+            // Hora de salida
+            canvas.drawText(record.getFormattedClockOut(), MARGIN_LEFT + 330f, y, cellPaint)
+
+            // Horas trabajadas
+            canvas.drawText(record.getFormattedHours(), MARGIN_LEFT + 400f, y, cellPaint)
+
+            // Estado (A tiempo / Tarde)
+            val statusText = if (record.isLateArrival) "Tarde" else "A tiempo"
+            val statusColor = if (record.isLateArrival) {
+                Color.parseColor("#F44336") // Rojo
+            } else {
+                Color.parseColor("#4CAF50") // Verde
+            }
+            canvas.drawText(statusText, MARGIN_LEFT + 460f, y, Paint().apply {
+                textSize = 7f
+                color = statusColor
+                typeface = Typeface.DEFAULT_BOLD
+            })
+
             y += LINE_HEIGHT
+
+            // Línea separadora entre registros
+            canvas.drawLine(MARGIN_LEFT, y, PAGE_WIDTH - MARGIN_RIGHT, y, Paint().apply {
+                strokeWidth = 0.5f
+                color = Color.LTGRAY
+            })
+            y += 3f
+
+            // Si llegamos al final de la página, aquí podrías crear una nueva página
+            // (por ahora limitado a una página)
         }
 
         y += 20f
@@ -508,5 +342,247 @@ object PDFGenerator {
         val h = hours.toInt()
         val m = ((hours - h) * 60).toInt()
         return "${h}h ${m}m"
+    }
+
+    // ========== MÉTODOS ANTIGUOS (por si los necesitas después) ==========
+
+    private fun drawSummary(canvas: Canvas, report: Report, startY: Float): Float {
+        var y = startY
+
+        val titlePaint = Paint().apply {
+            textSize = 12f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val valuePaint = Paint().apply {
+            textSize = 11f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("RESUMEN GENERAL:", MARGIN_LEFT, y, titlePaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Total de registros:", MARGIN_LEFT + 10f, y, valuePaint)
+        canvas.drawText(report.totalRecords.toString(), MARGIN_LEFT + 200f, y, valuePaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Total de personas:", MARGIN_LEFT + 10f, y, valuePaint)
+        canvas.drawText(report.totalPersons.toString(), MARGIN_LEFT + 200f, y, valuePaint)
+        y += LINE_HEIGHT
+
+        if (report.filter.includeHours) {
+            canvas.drawText("Total horas trabajadas:", MARGIN_LEFT + 10f, y, valuePaint)
+            canvas.drawText(formatHours(report.totalHoursWorked), MARGIN_LEFT + 200f, y, valuePaint)
+            y += LINE_HEIGHT
+        }
+
+        if (report.filter.includeLateArrivals) {
+            canvas.drawText("Total de atrasos:", MARGIN_LEFT + 10f, y, valuePaint)
+            canvas.drawText(report.totalLateArrivals.toString(), MARGIN_LEFT + 200f, y, valuePaint)
+            y += LINE_HEIGHT
+        }
+
+        if (report.filter.includeAbsences) {
+            canvas.drawText("Total de ausencias:", MARGIN_LEFT + 10f, y, valuePaint)
+            canvas.drawText(report.totalAbsences.toString(), MARGIN_LEFT + 200f, y, valuePaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
+    }
+
+    private fun drawPersonSummaryTable(canvas: Canvas, summaries: List<PersonSummary>, startY: Float): Float {
+        var y = startY
+
+        val headerPaint = Paint().apply {
+            textSize = 10f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val cellPaint = Paint().apply {
+            textSize = 9f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("RESUMEN POR PERSONA:", MARGIN_LEFT, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Nombre", MARGIN_LEFT, y, headerPaint)
+        canvas.drawText("Días", MARGIN_LEFT + 180f, y, headerPaint)
+        canvas.drawText("Presente", MARGIN_LEFT + 230f, y, headerPaint)
+        canvas.drawText("Ausente", MARGIN_LEFT + 300f, y, headerPaint)
+        canvas.drawText("Atrasos", MARGIN_LEFT + 370f, y, headerPaint)
+        canvas.drawText("Horas", MARGIN_LEFT + 430f, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawLine(MARGIN_LEFT, y, PAGE_WIDTH - MARGIN_RIGHT, y, Paint().apply {
+            strokeWidth = 1f
+            color = Color.LTGRAY
+        })
+        y += 5f
+
+        summaries.forEach { summary ->
+            canvas.drawText(summary.personName, MARGIN_LEFT, y, cellPaint)
+            canvas.drawText(summary.totalDays.toString(), MARGIN_LEFT + 180f, y, cellPaint)
+            canvas.drawText(summary.presentDays.toString(), MARGIN_LEFT + 230f, y, cellPaint)
+            canvas.drawText(summary.absentDays.toString(), MARGIN_LEFT + 300f, y, cellPaint)
+            canvas.drawText(summary.lateArrivals.toString(), MARGIN_LEFT + 370f, y, cellPaint)
+            canvas.drawText(summary.getFormattedTotalHours(), MARGIN_LEFT + 430f, y, cellPaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
+    }
+
+    private fun drawDaySummaryTable(canvas: Canvas, summaries: List<DaySummary>, startY: Float): Float {
+        var y = startY
+
+        val headerPaint = Paint().apply {
+            textSize = 10f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val cellPaint = Paint().apply {
+            textSize = 9f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("RESUMEN POR DÍA:", MARGIN_LEFT, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
+        canvas.drawText("Total", MARGIN_LEFT + 150f, y, headerPaint)
+        canvas.drawText("Presente", MARGIN_LEFT + 220f, y, headerPaint)
+        canvas.drawText("Ausente", MARGIN_LEFT + 300f, y, headerPaint)
+        canvas.drawText("Atrasos", MARGIN_LEFT + 380f, y, headerPaint)
+        y += LINE_HEIGHT
+
+        summaries.forEach { summary ->
+            canvas.drawText(summary.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
+            canvas.drawText(summary.totalPersons.toString(), MARGIN_LEFT + 150f, y, cellPaint)
+            canvas.drawText(summary.presentPersons.toString(), MARGIN_LEFT + 220f, y, cellPaint)
+            canvas.drawText(summary.absentPersons.toString(), MARGIN_LEFT + 300f, y, cellPaint)
+            canvas.drawText(summary.lateArrivals.toString(), MARGIN_LEFT + 380f, y, cellPaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
+    }
+
+    private fun drawAttendanceDetailTable(canvas: Canvas, records: List<AttendanceRecord>, startY: Float): Float {
+        var y = startY
+
+        val headerPaint = Paint().apply {
+            textSize = 10f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val cellPaint = Paint().apply {
+            textSize = 9f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("DETALLE DE ASISTENCIAS:", MARGIN_LEFT, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
+        canvas.drawText("Persona", MARGIN_LEFT + 100f, y, headerPaint)
+        canvas.drawText("Entrada", MARGIN_LEFT + 250f, y, headerPaint)
+        canvas.drawText("Salida", MARGIN_LEFT + 330f, y, headerPaint)
+        canvas.drawText("Horas", MARGIN_LEFT + 410f, y, headerPaint)
+        y += LINE_HEIGHT
+
+        records.take(30).forEach { record ->
+            canvas.drawText(record.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
+            canvas.drawText(record.personName, MARGIN_LEFT + 100f, y, cellPaint)
+            canvas.drawText(record.getFormattedClockIn(), MARGIN_LEFT + 250f, y, cellPaint)
+            canvas.drawText(record.getFormattedClockOut(), MARGIN_LEFT + 330f, y, cellPaint)
+            canvas.drawText(record.getFormattedHours(), MARGIN_LEFT + 410f, y, cellPaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
+    }
+
+    private fun drawHoursTable(canvas: Canvas, summaries: List<PersonSummary>, startY: Float): Float {
+        var y = startY
+
+        val headerPaint = Paint().apply {
+            textSize = 10f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val cellPaint = Paint().apply {
+            textSize = 9f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("HORAS TRABAJADAS POR PERSONA:", MARGIN_LEFT, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Persona", MARGIN_LEFT, y, headerPaint)
+        canvas.drawText("Total Horas", MARGIN_LEFT + 250f, y, headerPaint)
+        canvas.drawText("Promedio/Día", MARGIN_LEFT + 370f, y, headerPaint)
+        y += LINE_HEIGHT
+
+        summaries.forEach { summary ->
+            canvas.drawText(summary.personName, MARGIN_LEFT, y, cellPaint)
+            canvas.drawText(summary.getFormattedTotalHours(), MARGIN_LEFT + 250f, y, cellPaint)
+            canvas.drawText(formatHours(summary.averageHoursPerDay), MARGIN_LEFT + 370f, y, cellPaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
+    }
+
+    private fun drawLateArrivalsTable(canvas: Canvas, records: List<AttendanceRecord>, startY: Float): Float {
+        var y = startY
+
+        val headerPaint = Paint().apply {
+            textSize = 10f
+            typeface = Typeface.DEFAULT_BOLD
+            color = Color.BLACK
+        }
+
+        val cellPaint = Paint().apply {
+            textSize = 9f
+            typeface = Typeface.DEFAULT
+            color = Color.DKGRAY
+        }
+
+        canvas.drawText("ATRASOS REGISTRADOS:", MARGIN_LEFT, y, headerPaint)
+        y += LINE_HEIGHT
+
+        canvas.drawText("Fecha", MARGIN_LEFT, y, headerPaint)
+        canvas.drawText("Persona", MARGIN_LEFT + 100f, y, headerPaint)
+        canvas.drawText("Entrada", MARGIN_LEFT + 250f, y, headerPaint)
+        canvas.drawText("Retraso", MARGIN_LEFT + 350f, y, headerPaint)
+        y += LINE_HEIGHT
+
+        records.forEach { record ->
+            canvas.drawText(record.getFormattedDate(), MARGIN_LEFT, y, cellPaint)
+            canvas.drawText(record.personName, MARGIN_LEFT + 100f, y, cellPaint)
+            canvas.drawText(record.getFormattedClockIn(), MARGIN_LEFT + 250f, y, cellPaint)
+            canvas.drawText("${record.lateMinutes} min", MARGIN_LEFT + 350f, y, cellPaint)
+            y += LINE_HEIGHT
+        }
+
+        y += 20f
+        return y
     }
 }
