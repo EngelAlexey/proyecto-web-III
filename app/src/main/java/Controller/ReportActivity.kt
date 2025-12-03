@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -12,9 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.clocker.Data.Report
 import com.example.clocker.Data.ReportFilter
@@ -24,7 +20,6 @@ import com.example.clocker.Interface.ReportGeneratorImpl
 import com.example.clocker.Util.PDFGenerator
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import Controller.PersonController
 import Controller.ZoneController
 import kotlinx.coroutines.Dispatchers
@@ -37,15 +32,7 @@ import java.util.*
 class ReportActivity : AppCompatActivity() {
 
     private lateinit var toolbar: MaterialToolbar
-    private lateinit var btnTemplateMonthly: MaterialButton
-    private lateinit var btnTemplateWeekly: MaterialButton
-    private lateinit var btnTemplateDaily: MaterialButton
-    private lateinit var btnTemplateHours: MaterialButton
-    private lateinit var btnTemplateLate: MaterialButton
     private lateinit var btnGenerateCustomReport: MaterialButton
-    private lateinit var fabGenerateReport: FloatingActionButton
-    private lateinit var rvReportHistory: RecyclerView
-    private lateinit var layoutEmptyState: LinearLayout
     private lateinit var layoutLoading: View
     private lateinit var tvLoadingMessage: TextView
     private lateinit var tvDateRange: TextView
@@ -74,10 +61,7 @@ class ReportActivity : AppCompatActivity() {
         initViews()
         setupToolbar()
         setupFilters()
-        setupTemplates()
         setupButtons()
-        setupRecyclerView()
-        loadReportHistory()
     }
 
     private fun initControllers() {
@@ -92,25 +76,20 @@ class ReportActivity : AppCompatActivity() {
         tvDateRange = findViewById(R.id.tvDateRange)
         tvPersonsFilter = findViewById(R.id.tvPersonsFilter)
         tvZonesFilter = findViewById(R.id.tvZonesFilter)
-        btnTemplateMonthly = findViewById(R.id.btnTemplateMonthly)
-        btnTemplateWeekly = findViewById(R.id.btnTemplateWeekly)
-        btnTemplateDaily = findViewById(R.id.btnTemplateDaily)
-        btnTemplateHours = findViewById(R.id.btnTemplateHours)
-        btnTemplateLate = findViewById(R.id.btnTemplateLate)
         btnGenerateCustomReport = findViewById(R.id.btnGenerateCustomReport)
-        fabGenerateReport = findViewById(R.id.fabGenerateReport)
-        rvReportHistory = findViewById(R.id.rvReportHistory)
-        layoutEmptyState = findViewById(R.id.layoutEmptyState)
         layoutLoading = findViewById(R.id.layoutLoading)
         tvLoadingMessage = findViewById(R.id.tvLoadingMessage)
-
-
     }
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = getString(R.string.module_reports)
+        supportActionBar?.title = "Módulo de Reportes"
+
+        // ✅ Configurar el botón de regresar
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun setupFilters() {
@@ -132,35 +111,10 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupTemplates() {
-        btnTemplateMonthly.setOnClickListener {
-            generateReportFromTemplate(ReportTemplate.MONTHLY_BY_PERSON)
-        }
-        btnTemplateWeekly.setOnClickListener {
-            generateReportFromTemplate(ReportTemplate.WEEKLY_SUMMARY)
-        }
-        btnTemplateDaily.setOnClickListener {
-            generateReportFromTemplate(ReportTemplate.DAILY_DETAIL)
-        }
-        btnTemplateHours.setOnClickListener {
-            generateReportFromTemplate(ReportTemplate.HOURS_WORKED)
-        }
-        btnTemplateLate.setOnClickListener {
-            generateReportFromTemplate(ReportTemplate.LATE_ARRIVALS)
-        }
-    }
-
     private fun setupButtons() {
         btnGenerateCustomReport.setOnClickListener {
             generateCustomReport()
         }
-        fabGenerateReport.setOnClickListener {
-            generateCustomReport()
-        }
-    }
-
-    private fun setupRecyclerView() {
-        rvReportHistory.layoutManager = LinearLayoutManager(this)
     }
 
     // ✅ SELECTOR DE RANGO DE FECHAS
@@ -344,8 +298,8 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateReportFromTemplate(template: ReportTemplate) {
-        showLoading(true, "Generando reporte ${template.templateName}...")
+    private fun generateCustomReport() {
+        showLoading(true, "Generando reporte personalizado...")
 
         lifecycleScope.launch {
             try {
@@ -382,10 +336,6 @@ class ReportActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun generateCustomReport() {
-        generateReportFromTemplate(ReportTemplate.MONTHLY_BY_PERSON)
     }
 
     private fun exportReportToPDF(report: Report) {
@@ -437,35 +387,15 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadReportHistory() {
-        showEmptyState(true)
-    }
-
     private fun showLoading(show: Boolean, message: String = "Cargando...") {
         layoutLoading.visibility = if (show) View.VISIBLE else View.GONE
         tvLoadingMessage.text = message
-    }
-
-    private fun showEmptyState(show: Boolean) {
-        layoutEmptyState.visibility = if (show) View.VISIBLE else View.GONE
-        rvReportHistory.visibility = if (show) View.GONE else View.VISIBLE
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_report, menu)
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                true
-            }
-            R.id.action_export_pdf -> {
-                lastGeneratedReport?.let {
-                    exportReportToPDF(it)
-                } ?: Toast.makeText(this, "Genera un reporte primero", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

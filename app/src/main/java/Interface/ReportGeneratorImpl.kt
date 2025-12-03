@@ -31,7 +31,7 @@ class ReportGeneratorImpl : IReportGenerator {
             name = reportName,
             generatedDate = Date(),
             filter = filter,
-            companyName = "Mi Empresa",
+            companyName = "Empresa Clocker",
             companyLogo = null,
             attendanceRecords = attendanceData,
             totalRecords = totalRecords,
