@@ -1,0 +1,34 @@
+graph TD;
+    User([Usuario]) -->|Abre| GUI[Pantalla de Marca];
+    GUI -->|Digita ID| ValidatePerson{¿Existe Persona?};
+
+    ValidatePerson -- No --> ErrorPerson[Mostrar Error: No Encontrado];
+    ValidatePerson -- Sí --> ShowName[Mostrar Nombre y Apellidos];
+
+    ShowName --> TakePhoto[Tomar Fotografía];
+    TakePhoto --> ClickSave[Clic en Guardar];
+
+    ClickSave --> ValidateZone{¿Zona y Horario Válido?};
+
+    ValidateZone -- No --> ErrorZone[Error: Fuera de Horario/Zona];
+    ValidateZone -- Sí --> Process[Procesar Marca];
+
+    Process -->|Captura Automática| DateTime[Obtener Fecha y Hora];
+    DateTime --> Logic{¿Conteo de Marcas?};
+
+    Logic -- 1ra Marca --> TypeIn[Registrar como ENTRADA];
+    Logic -- 2da Marca --> TypeOut[Registrar como SALIDA];
+    Logic -- +2 Marcas --> ErrorMax[Error: Límite Excedido];
+
+    TypeIn --> SaveDB[(Guardar en Base de Datos)];
+    TypeOut --> SaveDB;
+
+    SaveDB --> ListBuilder[Actualizar Lista de Asistencias];
+    ListBuilder --> End([Fin del Proceso]);
+
+    style User fill:#f9f,stroke:#333,stroke-width:2px;
+    style GUI fill:#bbf,stroke:#333,stroke-width:2px;
+    style SaveDB fill:#bfb,stroke:#333,stroke-width:2px;
+    style ErrorPerson fill:#fbb,stroke:#333;
+    style ErrorZone fill:#fbb,stroke:#333;
+    style ErrorMax fill:#fbb,stroke:#333;

@@ -2,48 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="12dp"
-    android:background="@android:color/white">
+    android:background="#FFF9C4">
 
+    <!-- FECHA -->
     <TextView
         android:id="@+id/txtDate"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
         android:text="01/01/2025"
         android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#000"/>
+
+    <!-- NOMBRE Y CÉDULA -->
+    <TextView
+        android:id="@+id/txtPersonInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre Apellido — 123456789"
+        android:textSize="14sp"
         android:textColor="#333"
-        android:textSize="15sp" />
+        android:layout_marginTop="4dp"/>
 
-    <TextView
-        android:id="@+id/txtEntry"
-        android:layout_width="0dp"
+    <!-- FILA DE HORAS -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="08:00"
-        android:textSize="14sp"
-        android:textColor="#444"
-        android:gravity="center"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
 
-    <TextView
-        android:id="@+id/txtExit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="17:00"
-        android:textSize="14sp"
-        android:textColor="#444"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/txtEntry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="--"
+            android:textSize="14sp"
+            android:textColor="#000"/>
 
-    <TextView
-        android:id="@+id/txtHours"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="9h 0m"
-        android:textSize="13sp"
-        android:textColor="#222"
-        android:gravity="center"/>
+        <TextView
+            android:id="@+id/txtExit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="--"
+            android:textSize="14sp"
+            android:textColor="#000"/>
+
+        <TextView
+            android:id="@+id/txtHours"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0h 0m"
+            android:textSize="14sp"
+            android:textColor="#000"
+            android:gravity="right"/>
+    </LinearLayout>
 
 </LinearLayout>

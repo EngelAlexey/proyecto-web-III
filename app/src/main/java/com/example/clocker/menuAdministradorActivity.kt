@@ -16,38 +16,31 @@ class MenuAdministradorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu_administrador)
 
-        // Inicializar SessionManager
         sessionManager = SessionManager(this)
 
-        // Verificar que sea administrador
         if (!sessionManager.esAdministrador()) {
             Toast.makeText(this, "Acceso denegado", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        // Configurar bienvenida
         val tvBienvenida: TextView = findViewById(R.id.tvBienvenida)
         val usuario = sessionManager.obtenerUsuarioActual()
         tvBienvenida.text = "Bienvenido, ${usuario?.nombreUsuario ?: "Administrador"}"
 
-        // Configurar botones
         configurarBotones()
     }
 
     private fun configurarBotones() {
-        // Botón Cerrar Sesión
         findViewById<Button>(R.id.btnCerrarSesion).setOnClickListener {
             mostrarDialogoCerrarSesion()
         }
 
-        // Botón Gestión de Usuarios
         findViewById<Button>(R.id.btnGestionUsuarios).setOnClickListener {
             val intent = Intent(this, GestionUsuariosActivity::class.java)
             startActivity(intent)
         }
 
-        // Botón Gestión de Zonas
         findViewById<Button>(R.id.btnGestionZonas).setOnClickListener {
             mostrarDialogoSeleccion("Gestión de Zonas", ZoneListActivity::class.java, ZoneActivity::class.java)
         }
@@ -58,7 +51,6 @@ class MenuAdministradorActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón Ver Asistencias
         findViewById<Button>(R.id.btnVerAsistencias).setOnClickListener {
             val intent = Intent(this, AttendanceListActivity::class.java)
             startActivity(intent)
@@ -76,9 +68,13 @@ class MenuAdministradorActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón Pantalla de Marca
         findViewById<Button>(R.id.btnPantallaMarca).setOnClickListener {
             mostrarDialogoSeleccion("Control de Marcas", ClockListActivity::class.java, ClockActivity::class.java)
+        }
+
+        findViewById<Button>(R.id.btnDocumentacion).setOnClickListener {
+            val intent = Intent(this, DocumentacionActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -89,11 +85,11 @@ class MenuAdministradorActivity : AppCompatActivity() {
             .setTitle(titulo)
             .setItems(opciones) { _, which ->
                 when (which) {
-                    0 -> { // Ver Lista
+                    0 -> {
                         val intent = Intent(this, claseLista)
                         startActivity(intent)
                     }
-                    1 -> { // Agregar Nuevo
+                    1 -> {
                         val intent = Intent(this, claseFormulario)
                         startActivity(intent)
                     }

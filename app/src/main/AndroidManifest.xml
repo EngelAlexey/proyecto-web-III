@@ -8,6 +8,7 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +23,13 @@
         <!-- ❌ ELIMINA ESTA LÍNEA -->
         <!-- <activity android:name=".AttendanceListAdapterSimple" android:exported="false" /> -->
 
+        <activity
+            android:name=".DocumentacionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AttendanceListAdapterSimple"
+            android:exported="false" />
         <activity
             android:name=".AttendanceQueryActivity"
             android:exported="false" />
