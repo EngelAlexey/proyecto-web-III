@@ -7,19 +7,21 @@ import android.content.Context
 import com.example.clocker.R
 import java.util.Date
 
-class ClockController {
+class ClockController(private val context: Context) {
 
     private var dataManager: IDataManager = MemoryDataManager
-    private var context: Context
 
-    constructor(context: Context) {
-        this.context = context
-    }
+    // ✅ NUEVO: Instancia del AttendanceController
+    private val attendanceController = AttendanceController(context)
 
     fun addClock(clock: Clock) {
         try {
+            // Guardar la marca de Clock
             dataManager.addClock(clock)
-            AttendanceController.processClockMark(clock)
+
+            // ✅ ACTIVADO: Procesar la marca para crear/actualizar asistencia
+            attendanceController.processClockMark(clock)
+
         } catch (e: Exception) {
             throw Exception(context.getString(R.string.ErrorMsgAdd))
         }

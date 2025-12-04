@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Exportar PDF -->
+    <item
+        android:id="@+id/action_export_pdf"
+        android:icon="@drawable/ic_export_pdf"
+        android:title="Exportar PDF"
+        app:showAsAction="ifRoom" />
+
+    <!-- Compartir -->
+    <item
+        android:id="@+id/action_share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="Compartir"
+        app:showAsAction="ifRoom" />
+
+    <!-- Filtros -->
+    <item
+        android:id="@+id/action_filter"
+        android:icon="@drawable/ic_filter"
+        android:title="Filtros"
+        app:showAsAction="never" />
+
+    <!-- Actualizar/Refrescar -->
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="Actualizar"
+        app:showAsAction="never" />
+
+    <!-- Ordenar -->
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        android:title="Ordenar">
+
+        <menu>
+            <item
+                android:id="@+id/sort_by_date"
+                android:title="Por Fecha" />
+
+            <item
+                android:id="@+id/sort_by_name"
+                android:title="Por Nombre" />
+
+            <item
+                android:id="@+id/sort_by_type"
+                android:title="Por Tipo" />
+        </menu>
+
+    </item>
+
+    <!-- Eliminar Reportes Antiguos -->
+    <item
+        android:id="@+id/action_delete_old"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Limpiar Antiguos"
+        app:showAsAction="never" />
+
+    <!-- Ayuda -->
+    <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="Ayuda"
+        app:showAsAction="never" />
+
+</menu>

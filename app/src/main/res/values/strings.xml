@@ -41,4 +41,152 @@
     <string name="TextEndTime">*Hora Fin</string>
     <string name="TitleZoneForm">Formulario de Zona</string>
     <string name="TitleZoneList">Listado de Zonas</string>
+
+    <!-- Report Module Strings -->
+    <string name="module_reports">Módulo de Reportes</string>
+    <string name="report_preview_title">Vista Previa del Reporte</string>
+
+    <!-- Report Filters -->
+    <string name="filter_configure">Configurar Filtros</string>
+    <string name="filter_applied">Filtros Aplicados</string>
+    <string name="filter_date_range">Rango de Fechas</string>
+    <string name="filter_start_date">Fecha Inicio</string>
+    <string name="filter_end_date">Fecha Fin</string>
+    <string name="filter_persons">Personas</string>
+    <string name="filter_zones">Zonas</string>
+    <string name="filter_all_persons">Todas las personas</string>
+    <string name="filter_all_zones">Todas las zonas</string>
+    <string name="filter_select">Seleccionar</string>
+    <string name="filter_reset">Restablecer</string>
+    <string name="filter_apply">Aplicar Filtros</string>
+
+    <!-- Quick Date Filters -->
+    <string name="quick_today">Hoy</string>
+    <string name="quick_this_week">Esta Semana</string>
+    <string name="quick_this_month">Este Mes</string>
+
+    <!-- Report Options -->
+    <string name="report_options">Opciones del Reporte</string>
+    <string name="option_include_hours">Incluir horas trabajadas</string>
+    <string name="option_include_late">Incluir atrasos</string>
+    <string name="option_include_absences">Incluir ausencias</string>
+    <string name="option_include_photos">Incluir fotografías</string>
+
+    <!-- Group By Options -->
+    <string name="group_by">Agrupar Datos Por</string>
+    <string name="group_by_person">Por Persona</string>
+    <string name="group_by_day">Por Día</string>
+    <string name="group_by_zone">Por Zona</string>
+
+    <!-- Report Templates -->
+    <string name="templates_predefined">Plantillas Predefinidas</string>
+    <string name="templates_description">Genera reportes rápidamente con estas plantillas</string>
+    <string name="template_monthly">Mensual</string>
+    <string name="template_weekly">Semanal</string>
+    <string name="template_daily">Diario</string>
+    <string name="template_hours">Horas</string>
+    <string name="template_late">Atrasos</string>
+
+    <!-- Report Actions -->
+    <string name="action_generate_report">Generar Reporte Personalizado</string>
+    <string name="action_export_pdf">Exportar PDF</string>
+    <string name="action_share">Compartir</string>
+    <string name="action_view">Ver</string>
+    <string name="action_refresh">Actualizar</string>
+    <string name="action_sort">Ordenar</string>
+    <string name="action_delete_old">Limpiar Antiguos</string>
+    <string name="action_help">Ayuda</string>
+
+    <!-- Report History -->
+    <string name="report_history">Historial de Reportes</string>
+    <string name="report_empty_title">No hay reportes generados</string>
+    <string name="report_empty_description">Genera tu primer reporte usando los filtros o plantillas</string>
+
+    <!-- Report Statistics -->
+    <string name="stats_summary">Resumen Estadístico</string>
+    <string name="stats_total_records">Registros</string>
+    <string name="stats_total_persons">Personas</string>
+    <string name="stats_total_hours">Horas</string>
+    <string name="stats_total_late">Atrasos</string>
+    <string name="stats_total_absences">Ausencias</string>
+
+    <!-- Report Preview -->
+    <string name="preview_first_records">Primeros Registros</string>
+    <string name="preview_showing">Mostrando %1$d de %2$d</string>
+    <string name="preview_see_complete">Ver reporte completo para más detalles</string>
+
+    <!-- Export Options -->
+    <string name="export_options">Opciones de Exportación</string>
+    <string name="export_description">El reporte se puede exportar en formato PDF con todos los datos completos.</string>
+    <string name="export_filename">Nombre</string>
+    <string name="export_location">Ubicación</string>
+    <string name="export_downloads">Downloads</string>
+
+    <!-- Messages -->
+    <string name="msg_generating_report">Generando reporte…</string>
+    <string name="msg_exporting_pdf">Exportando a PDF…</string>
+    <string name="msg_report_generated">Reporte generado exitosamente</string>
+    <string name="msg_pdf_exported">PDF exportado: %1$s</string>
+    <string name="msg_error_generate">Error al generar reporte: %1$s</string>
+    <string name="msg_error_export">Error al exportar: %1$s</string>
+    <string name="msg_invalid_filters">Los filtros seleccionados no son válidos</string>
+    <string name="msg_invalid_date_range">El rango de fechas no es válido</string>
+    <string name="msg_date_range_too_long">El rango no puede ser mayor a 1 año</string>
+    <string name="msg_future_dates">Las fechas no pueden ser futuras</string>
+    <string name="msg_history_updated">Historial actualizado</string>
+    <string name="msg_report_deleted">Reporte eliminado</string>
+    <string name="msg_reports_deleted">Se eliminaron %1$d reportes</string>
+
+    <!-- Sort Options -->
+    <string name="sort_by_date">Por Fecha</string>
+    <string name="sort_by_name">Por Nombre</string>
+    <string name="sort_by_type">Por Tipo</string>
+    <string name="sorted_by">Ordenado por %1$s</string>
+
+    <!-- Report Types -->
+    <string name="report_type_monthly">Mensual</string>
+    <string name="report_type_weekly">Semanal</string>
+    <string name="report_type_daily">Diario</string>
+    <string name="report_type_hours">Horas Trabajadas</string>
+    <string name="report_type_late">Atrasos</string>
+    <string name="report_type_general">General</string>
+
+    <!-- Report Status -->
+    <string name="status_generating">Generando…</string>
+    <string name="status_completed">Completado</string>
+    <string name="status_failed">Fallido</string>
+    <string name="status_exported">Exportado</string>
+    <string name="status_pdf_exported">PDF Exportado</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_delete_old_title">Eliminar Reportes Antiguos</string>
+    <string name="dialog_delete_old_message">¿Eliminar todos los reportes de hace más de 3 meses?</string>
+    <string name="dialog_help_title">Ayuda - Módulo de Reportes</string>
+    <string name="dialog_help_message">1. Selecciona un rango de fechas\n2. Configura los filtros (personas, zonas)\n3. Elige una plantilla o genera personalizado\n4. Revisa la vista previa\n5. Exporta a PDF o comparte\n\nPuedes ver reportes anteriores en el historial.</string>
+
+    <!-- Buttons -->
+    <string name="btn_generate">Generar</string>
+    <string name="btn_export">Exportar</string>
+    <string name="btn_open_pdf">Abrir PDF</string>
+    <string name="btn_close">Cerrar</string>
+    <string name="btn_understood">Entendido</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_report_icon">Ícono de reporte</string>
+    <string name="cd_more_options">Más opciones</string>
+    <string name="cd_close_dialog">Cerrar</string>
+    <string name="cd_generate_report">Generar nuevo reporte</string>
+
+    <!-- Period Labels -->
+    <string name="period_label">Período</string>
+    <string name="generated_label">Generado</string>
+    <string name="generated_ago">Generado %1$s</string>
+
+    <!-- Report Menu Actions -->
+
+    <string name="action_filter">Filtros</string>
+
+
+
+
 </resources>

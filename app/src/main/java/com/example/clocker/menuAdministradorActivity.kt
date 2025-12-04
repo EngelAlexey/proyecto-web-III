@@ -45,6 +45,7 @@ class MenuAdministradorActivity : AppCompatActivity() {
             mostrarDialogoSeleccion("Gestión de Zonas", ZoneListActivity::class.java, ZoneActivity::class.java)
         }
 
+        // Botón Gestión de Personal
         findViewById<Button>(R.id.btnGestionPersonal).setOnClickListener {
             val intent = Intent(this, PersonForm::class.java)
             startActivity(intent)
@@ -55,13 +56,16 @@ class MenuAdministradorActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Botón Consulta Avanzada de Asistencias
         findViewById<Button>(R.id.btnConsultaAvanzada).setOnClickListener {
             val intent = Intent(this, AttendanceQueryActivity::class.java)
             startActivity(intent)
         }
 
+        // Botón Reportes - CORREGIDO
         findViewById<Button>(R.id.btnReportes).setOnClickListener {
-            Toast.makeText(this, "Módulo de Reportes (en desarrollo)", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, ReportActivity::class.java)
+            startActivity(intent)
         }
 
         findViewById<Button>(R.id.btnPantallaMarca).setOnClickListener {
