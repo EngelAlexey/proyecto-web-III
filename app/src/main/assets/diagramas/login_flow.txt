@@ -1,4 +1,96 @@
 graph TD;
-    A[Usuario abre App] --> B{¿Tiene sesión?};
-    B -- Sí --> C[Home];
-    B -- No --> D[Login Screen];
+    Usuario[Usuario abre App] --> LoginScreen[Pantalla de Login];
+    LoginScreen --> IngresoCredenciales[Ingresa usuario y contraseña];
+    IngresoCredenciales --> ValidaCampos{¿Campos vacíos?};
+    
+    ValidaCampos -- Sí --> ErrorCampos[Mostrar: Ingrese todos los campos];
+    ErrorCampos --> LoginScreen;
+    
+    ValidaCampos -- No --> ValidarCredenciales[UsuarioManager.validarCredenciales];
+    ValidarCredenciales --> HashPassword[PasswordHelper.hashPassword];
+    HashPassword --> CompararHash{¿Coincide hash?};
+    
+    CompararHash -- No --> ErrorCredenciales[Mostrar: Usuario o contraseña incorrectos];
+    ErrorCredenciales --> LoginScreen;
+    
+    CompararHash -- Sí --> VerificarActivo{¿Usuario activo?};
+    
+    VerificarActivo -- No --> ErrorInactivo[Mostrar: Usuario inactivo];
+    ErrorInactivo --> LoginScreen;
+    
+    VerificarActivo -- Sí --> GuardarSesion[SessionManager.guardarSesion];
+    GuardarSesion --> VerificarRol{¿Qué rol tiene?};
+    
+    VerificarRol -- Administrador --> MenuAdmin[MenuAdministradorActivity];
+    VerificarRol -- Reloj --> ClockScreen[ClockActivity];
+    
+    MenuAdmin --> OpcionesAdmin{Opciones Administrador};
+    OpcionesAdmin --> GestionUsuarios[Click Gestión de Usuarios];
+    OpcionesAdmin --> CerrarSesionAdmin[Click Cerrar Sesión];
+    
+    GestionUsuarios --> ListaUsuarios[Mostrar RecyclerView usuarios];
+    ListaUsuarios --> AccionesUsuario{Acciones del Admin};
+    
+    AccionesUsuario --> CrearNuevo[Click + Nuevo];
+    AccionesUsuario --> EditarUsuario[Click Editar];
+    AccionesUsuario --> CambiarPass[Click Contraseña];
+    AccionesUsuario --> ToggleEstado[Click Activar/Desactivar];
+    
+    CrearNuevo --> DialogCrear[Abrir dialog_usuario];
+    DialogCrear --> FormularioNuevo[Formulario: usuario, password, rol];
+    FormularioNuevo --> ValidarNuevo{¿Datos válidos?};
+    ValidarNuevo -- No --> ErrorValidacion[Mostrar error específico];
+    ErrorValidacion --> FormularioNuevo;
+    ValidarNuevo -- Sí --> HashNuevoPass[Hash password];
+    HashNuevoPass --> VerificarDuplicado{¿Usuario existe?};
+    VerificarDuplicado -- Sí --> ErrorDuplicado[Error: Usuario existe];
+    ErrorDuplicado --> FormularioNuevo;
+    VerificarDuplicado -- No --> AgregarUsuario[Agregar a lista];
+    AgregarUsuario --> ActualizarLista1[Actualizar RecyclerView];
+    ActualizarLista1 --> ExitoCrear[Usuario creado exitosamente];
+    
+    EditarUsuario --> DialogEditar[Abrir dialog con datos];
+    DialogEditar --> FormularioEditar[Editar nombre y rol];
+    FormularioEditar --> GuardarEdicion[Click Guardar];
+    GuardarEdicion --> ActualizarDatos[Actualizar usuario];
+    ActualizarDatos --> ActualizarLista2[Actualizar RecyclerView];
+    ActualizarLista2 --> ExitoEditar[Usuario actualizado];
+    
+    CambiarPass --> DialogPassword[dialog_cambiar_password];
+    DialogPassword --> IngresarNuevas[Ingresar nueva password 2 veces];
+    IngresarNuevas --> ValidarPasswords{¿Válidas y coinciden?};
+    ValidarPasswords -- No --> ErrorPass[Mostrar error];
+    ErrorPass --> IngresarNuevas;
+    ValidarPasswords -- Sí --> HashNuevaPass[Hash nueva password];
+    HashNuevaPass --> ActualizarPass[Actualizar contraseña];
+    ActualizarPass --> ExitoPass[Contraseña cambiada];
+    
+    ToggleEstado --> ConfirmarCambio[Mostrar confirmación];
+    ConfirmarCambio --> CambiarEstado[Cambiar usuario.activo];
+    CambiarEstado --> ActualizarLista3[Actualizar RecyclerView];
+    ActualizarLista3 --> ExitoEstado[Estado cambiado];
+    
+    CerrarSesionAdmin --> ConfirmarCierre[¿Está seguro?];
+    ConfirmarCierre -- Sí --> LimpiarSesion[SessionManager.cerrarSesion];
+    LimpiarSesion --> LimpiarPrefs[Clear SharedPreferences];
+    LimpiarPrefs --> VolverLogin[Redirigir a LoginActivity];
+    VolverLogin --> SesionCerrada[Sesión cerrada];
+    
+    ClockScreen --> MarcaAsistencia[Registrar marca];
+    
+    style Usuario fill:#e1f5ff,stroke:#333,stroke-width:2px
+    style LoginScreen fill:#fff3cd,stroke:#333,stroke-width:2px
+    style MenuAdmin fill:#d4edda,stroke:#333,stroke-width:2px
+    style ClockScreen fill:#d4edda,stroke:#333,stroke-width:2px
+    style GestionUsuarios fill:#cfe2ff,stroke:#333,stroke-width:2px
+    style ErrorCampos fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ErrorCredenciales fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ErrorInactivo fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ErrorValidacion fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ErrorDuplicado fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ErrorPass fill:#f8d7da,stroke:#333,stroke-width:2px
+    style ExitoCrear fill:#d4edda,stroke:#333,stroke-width:2px
+    style ExitoEditar fill:#d4edda,stroke:#333,stroke-width:2px
+    style ExitoPass fill:#d4edda,stroke:#333,stroke-width:2px
+    style ExitoEstado fill:#d4edda,stroke:#333,stroke-width:2px
+    style SesionCerrada fill:#d4edda,stroke:#333,stroke-width:2px
