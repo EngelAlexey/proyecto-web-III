@@ -11,7 +11,6 @@ object UsuarioManager {
     }
 
     fun crearUsuario(nombreUsuario: String, contrasena: String, rol: String): Boolean {
-        // Verificar si ya existe
         if (usuarios.any { it.nombreUsuario == nombreUsuario }) {
             return false
         }
@@ -24,7 +23,8 @@ object UsuarioManager {
             nombreUsuario = nombreUsuario,
             contrasena = contrasenaHasheada,
             rol = rol,
-            activo = true
+            activo = true,
+            email = "$nombreUsuario@clocker.com"
         )
 
         usuarios.add(nuevoUsuario)
@@ -37,7 +37,14 @@ object UsuarioManager {
         if (usuario == null) return null
         if (!usuario.activo) return null
 
-        val passwordValido = PasswordHelper.verificarPassword(contrasena, usuario.contrasena)
+        // CORRECCIÓN: Obtenemos la contraseña de forma segura
+        val passwordAlmacenada = usuario.contrasena
+
+        // Si la contraseña en BD es nula, no podemos validar => retornamos null
+        if (passwordAlmacenada == null) return null
+
+        // Ahora passwordAlmacenada es String (no nulo) y el error desaparece
+        val passwordValido = PasswordHelper.verificarPassword(contrasena, passwordAlmacenada)
 
         return if (passwordValido) usuario else null
     }

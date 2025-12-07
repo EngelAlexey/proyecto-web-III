@@ -186,6 +186,8 @@
     <!-- Report Menu Actions -->
 
     <string name="action_filter">Filters</string>
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Close menu</string>
 
 
 </resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139935426182",
+    "project_id": "webiii-7e6f8",
+    "storage_bucket": "webiii-7e6f8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139935426182:android:e2a1038b39aa04c40fd307",
+        "android_client_info": {
+          "package_name": "com.example.clocker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBWP24YXjgl2wjXUtSQGuhRMARNSebAk4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

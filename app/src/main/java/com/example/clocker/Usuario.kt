@@ -1,12 +1,18 @@
 package com.example.clocker
 
 data class Usuario(
-    val id: String,
-    var nombreUsuario: String,
-    var contrasena: String,
-    var rol: String, // "Administrador" o "Reloj"
-    var activo: Boolean = true
+    var id: String = "",
+    var nombreUsuario: String = "",
+    var contrasena: String? = null,
+    var rol: String = "",
+    var activo: Boolean = true,
+    var email: String = ""
 ) {
-    fun esAdministrador(): Boolean = rol == "Administrador"
-    fun esReloj(): Boolean = rol == "Reloj"
+    constructor() : this("", "", null, "", true, "")
+
+    val esAdministrador: Boolean
+        get() = rol == "Administrador"
+
+    val esReloj: Boolean
+        get() = rol == "Reloj"
 }
