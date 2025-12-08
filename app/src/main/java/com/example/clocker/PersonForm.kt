@@ -78,28 +78,31 @@ class PersonForm : AppCompatActivity() {
     }
 
     private fun showZoneSelectionDialog() {
-        try {
-            zoneList = zoneController.getActiveZones()
+        // ✅ MODIFICADO: Usar callback asíncrono
+        zoneController.getActiveZones(
+            onSuccess = { zones ->
+                zoneList = zones
 
-            if (zoneList.isEmpty()) {
-                Toast.makeText(this, "No hay zonas activas disponibles", Toast.LENGTH_SHORT).show()
-                return
+                if (zoneList.isEmpty()) {
+                    Toast.makeText(this, "No hay zonas activas disponibles", Toast.LENGTH_SHORT).show()
+                    return@getActiveZones
+                }
+
+                val zoneDisplayArray = zoneList.map { "${it.Code} - ${it.Name}" }.toTypedArray()
+
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Seleccione una Zona")
+                builder.setItems(zoneDisplayArray) { _, which ->
+                    val selectedZone = zoneList[which]
+                    TextZoneCode.setText(selectedZone.Code)
+                }
+                builder.setNegativeButton("Cancelar", null)
+                builder.show()
+            },
+            onFailure = { error ->
+                Toast.makeText(this, "Error al cargar zonas: $error", Toast.LENGTH_LONG).show()
             }
-
-            val zoneDisplayArray = zoneList.map { "${it.Code} - ${it.Name}" }.toTypedArray()
-
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Seleccione una Zona")
-            builder.setItems(zoneDisplayArray) { _, which ->
-                val selectedZone = zoneList[which]
-                TextZoneCode.setText(selectedZone.Code)
-            }
-            builder.setNegativeButton("Cancelar", null)
-            builder.show()
-
-        } catch (e: Exception) {
-            Toast.makeText(this, "Error al cargar zonas: ${e.message}", Toast.LENGTH_LONG).show()
-        }
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -134,7 +137,7 @@ class PersonForm : AppCompatActivity() {
         return true
     }
 
-    fun clear() {
+    private fun clear() {
         TextId.text.clear()
         TextName.text.clear()
         TextFLastName.text.clear()
@@ -145,7 +148,7 @@ class PersonForm : AppCompatActivity() {
         isEditMode = false
     }
 
-    fun isValidate(): Boolean =
+    private fun isValidate(): Boolean =
         TextId.text.isNotBlank() &&
                 TextName.text.isNotBlank() &&
                 TextFLastName.text.isNotBlank() &&
@@ -154,42 +157,48 @@ class PersonForm : AppCompatActivity() {
                 TextZoneCode.text.isNotBlank() &&
                 SwitchStatus.isChecked
 
-
-    fun searchPerson() {
-        try {
-            val id = TextId.text.toString().trim()
-            if (id.isBlank()) {
-                Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
-                return
-            }
-
-            val person = personController.getByIdPerson(id)
-
-            if (person == null) {
-                Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
-                clear()
-            } else {
-                TextName.setText(person.Name)
-                TextFLastName.setText(person.FLastName)
-                TextSLastName.setText(person.SLastName)
-                TextNationality.setText(person.Nationality)
-                TextZoneCode.setText(person.ZoneCode)
-                SwitchStatus.isChecked = person.Status
-                isEditMode = true
-            }
-
-        } catch (e: Exception) {
-            Toast.makeText(this, e.message ?: getString(R.string.ErrorMsgGetById), Toast.LENGTH_LONG).show()
+    private fun searchPerson() {
+        val id = TextId.text.toString().trim()
+        if (id.isBlank()) {
+            Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
+            return
         }
+
+        // ✅ MODIFICADO: Usar callback asíncrono
+        personController.getByIdPerson(
+            id = id,
+            onSuccess = { person ->
+                if (person == null) {
+                    Toast.makeText(this, R.string.MsgDataNoFound, Toast.LENGTH_LONG).show()
+                    clear()
+                } else {
+                    TextName.setText(person.Name)
+                    TextFLastName.setText(person.FLastName)
+                    TextSLastName.setText(person.SLastName)
+                    TextNationality.setText(person.Nationality)
+                    TextZoneCode.setText(person.ZoneCode)
+                    SwitchStatus.isChecked = person.Status
+                    isEditMode = true
+                }
+            },
+            onFailure = { error ->
+                Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+            }
+        )
     }
 
+    private fun savePerson() {
+        if (!isValidate()) {
+            Toast.makeText(this, R.string.ErrorMsgAdd, Toast.LENGTH_LONG).show()
+            return
+        }
 
-    fun savePerson() {
-        try {
-            if (isValidate()) {
-                val id = TextId.text.toString().trim()
-                val existingPerson = personController.getByIdPerson(id)
+        val id = TextId.text.toString().trim()
 
+        // ✅ MODIFICADO: Verificar duplicados antes de guardar
+        personController.getByIdPerson(
+            id = id,
+            onSuccess = { existingPerson ->
                 if (existingPerson != null && !isEditMode) {
                     Toast.makeText(this, getString(R.string.MsgDuplicateDate), Toast.LENGTH_LONG).show()
                 } else {
@@ -204,39 +213,65 @@ class PersonForm : AppCompatActivity() {
                     }
 
                     if (isEditMode) {
-                        personController.updatePerson(person)
-                        Toast.makeText(this, getString(R.string.MsgUpdate), Toast.LENGTH_LONG).show()
+                        personController.updatePerson(
+                            person = person,
+                            onSuccess = {
+                                Toast.makeText(this, getString(R.string.MsgUpdate), Toast.LENGTH_LONG).show()
+                                clear()
+                            },
+                            onFailure = { error ->
+                                Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+                            }
+                        )
                     } else {
-                        personController.addPerson(person)
-                        Toast.makeText(this, getString(R.string.MsgSave), Toast.LENGTH_LONG).show()
+                        personController.addPerson(
+                            person = person,
+                            onSuccess = {
+                                Toast.makeText(this, getString(R.string.MsgSave), Toast.LENGTH_LONG).show()
+                                clear()
+                            },
+                            onFailure = { error ->
+                                Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+                            }
+                        )
                     }
-
-                    clear()
                 }
-            } else {
-                Toast.makeText(this, R.string.ErrorMsgAdd, Toast.LENGTH_LONG).show()
+            },
+            onFailure = { error ->
+                Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
             }
-        } catch (e: Exception) {
-            Toast.makeText(this, e.message.toString(), Toast.LENGTH_LONG).show()
-        }
+        )
     }
 
-
-    fun deletePerson(){
-        try {
-            val person = personController.getByIdPerson(TextId.text.toString().trim())
-            val id = TextId.text.toString().trim()
-            if (id.isBlank()){
-                Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
-            } else if (person == null){
-                Toast.makeText(this, R.string.ErrorMsgRemove, Toast.LENGTH_LONG).show()
-            } else {
-                personController.removePerson(person)
-            }
-            Toast.makeText(this, R.string.MsgDelete, Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, e.message.toString(), Toast.LENGTH_LONG).show()
+    private fun deletePerson() {
+        val id = TextId.text.toString().trim()
+        if (id.isBlank()) {
+            Toast.makeText(this, R.string.ErrorMsgGetById, Toast.LENGTH_LONG).show()
+            return
         }
-        clear()
+
+        // ✅ MODIFICADO: Verificar existencia antes de eliminar
+        personController.getByIdPerson(
+            id = id,
+            onSuccess = { person ->
+                if (person == null) {
+                    Toast.makeText(this, R.string.ErrorMsgRemove, Toast.LENGTH_LONG).show()
+                } else {
+                    personController.removePerson(
+                        id = id,
+                        onSuccess = {
+                            Toast.makeText(this, R.string.MsgDelete, Toast.LENGTH_LONG).show()
+                            clear()
+                        },
+                        onFailure = { error ->
+                            Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+                        }
+                    )
+                }
+            },
+            onFailure = { error ->
+                Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+            }
+        )
     }
 }

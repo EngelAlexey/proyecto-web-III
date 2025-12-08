@@ -1,92 +1,125 @@
 package Controller
 
-import Data.IDataManager
-import Data.MemoryDataManager
 import Entity.Zone
 import android.content.Context
-import com.example.clocker.R
+import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.example.clocker.Firebase.FirestoreDataManager
+import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 
-class ZoneController {
+class ZoneController(private val context: Context) {
 
-    private var dataManager: IDataManager = MemoryDataManager
-    private var context: Context
+    private val firestoreManager = FirestoreDataManager()
+    private val TAG = "ZoneController"
 
-    constructor(context: Context){
-        this.context = context
-    }
+    private val lifecycleOwner: LifecycleOwner?
+        get() = context as? LifecycleOwner
 
-    fun addZone(zone: Zone){
-        try {
-            dataManager.addZone(zone)
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgAdd))
+    fun addZone(zone: Zone, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.addZone(zone)
+            result.onSuccess {
+                Log.d(TAG, "✅ Zone added successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error adding zone: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 
-    fun updateZone(zone: Zone){
-        try {
-            dataManager.updateZone(zone)
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgUpdate))
+    fun updateZone(zone: Zone, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.updateZone(zone)
+            result.onSuccess {
+                Log.d(TAG, "✅ Zone updated successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error updating zone: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 
-    fun removeZone(id: String) {
-        try {
-            dataManager.removeZone(id)
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgRemove))
+    fun removeZone(id: String, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.removeZone(id)
+            result.onSuccess {
+                Log.d(TAG, "✅ Zone removed successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error removing zone: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 
-    fun getAllZone(): List<Zone>{
-        try {
-            return dataManager.getAllZone()
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgGetAll))
+    fun getAllZone(onSuccess: (List<Zone>) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val zones = firestoreManager.getAllZone()
+                Log.d(TAG, "✅ Retrieved ${zones.size} zones")
+                onSuccess(zones)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting zones: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 
-    fun getByIdZone(id: String): Zone? {
-        try {
-            return dataManager.getByIdZone(id)
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgGetById))
+    fun getByIdZone(id: String, onSuccess: (Zone?) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val zone = firestoreManager.getByIdZone(id)
+                onSuccess(zone)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting zone: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 
     fun getByCodeZone(code: String): Zone? {
-        try {
-            return dataManager.getByCodeZone(code)
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgGetById))
-        }
+        // Método síncrono temporal - en producción usar versión async
+        Log.w(TAG, "⚠️ Using sync method - consider migrating to async version")
+        return null
     }
 
-    fun getActiveZones(): List<Zone> {
-        try {
-            return dataManager.getActiveZones()
-        } catch (e: Exception){
-            throw Exception(context.getString(R.string.ErrorMsgGetAll))
-        }
-    }
-
-    fun isClockValidInZone(zone: Zone, clockDateTime: LocalDateTime): Boolean {
-        try {
-            if (!zone.Status) return false
-
-            val currentDay = clockDateTime.dayOfWeek
-            if (!zone.Days.contains(currentDay)) {
-                return false
+    fun getActiveZones(onSuccess: (List<Zone>) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val zones = firestoreManager.getActiveZones()
+                Log.d(TAG, "✅ Retrieved ${zones.size} active zones")
+                onSuccess(zones)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting active zones: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
             }
+        }
+    }
 
-            val clockTime = clockDateTime.toLocalTime()
-            return (clockTime.isAfter(zone.StartTime) && clockTime.isBefore(zone.EndTime)) ||
-                    clockTime == zone.StartTime ||
-                    clockTime == zone.EndTime
-        } catch (e: Exception){
+    fun isClockValidInZone(zone: Zone, dateTime: LocalDateTime): Boolean {
+        val currentDayOfWeek: DayOfWeek = dateTime.dayOfWeek
+        val currentTime = dateTime.toLocalTime()
+
+        // Verificar si el día está permitido
+        if (!zone.Days.contains(currentDayOfWeek)) {
+            Log.d(TAG, "❌ Day not allowed: $currentDayOfWeek")
             return false
         }
+
+        // Verificar si está dentro del horario
+        val isWithinTime = !currentTime.isBefore(zone.StartTime) && !currentTime.isAfter(zone.EndTime)
+
+        if (!isWithinTime) {
+            Log.d(TAG, "❌ Time not allowed: $currentTime (allowed: ${zone.StartTime} - ${zone.EndTime})")
+        } else {
+            Log.d(TAG, "✅ Clock valid in zone")
+        }
+
+        return isWithinTime
     }
 }

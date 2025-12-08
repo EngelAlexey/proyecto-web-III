@@ -1,152 +1,162 @@
 package Controller
 
-import Data.MemoryDataManager
 import Entity.Attendances
 import Entity.Clock
 import android.content.Context
 import android.util.Log
-import com.example.clocker.R
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.example.clocker.Firebase.FirestoreDataManager
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.*
 
-/**
- * AttendanceController - Procesa marcas de Clock y las agrupa en Attendances
- *
- * Flujo:
- * 1. Primera marca del día = Entrada (crea nueva Attendance)
- * 2. Segunda marca del día = Salida (actualiza Attendance existente)
- */
 class AttendanceController(private val context: Context) {
 
-    private val dataManager = MemoryDataManager
+    private val firestoreManager = FirestoreDataManager()
+    private val TAG = "AttendanceController"
 
-    /**
-     * Procesa una marca de reloj y la convierte en asistencia
-     *
-     * @param clock Marca de reloj (entrada o salida)
-     */
+    private val lifecycleOwner: LifecycleOwner?
+        get() = context as? LifecycleOwner
+
     fun processClockMark(clock: Clock) {
-        try {
-            Log.d("AttendanceController", "🔄 Procesando marca de ${clock.IDPerson}")
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val dateAttendance = Date.from(
+                    clock.DateClock.toLocalDate()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+                )
 
-            // Convertir fecha del Clock a Date
-            val clockDate = Date.from(clock.DateClock.atZone(ZoneId.systemDefault()).toInstant())
+                // Buscar asistencia existente para ese día
+                val existingAttendance = firestoreManager.getByDateAttendance(dateAttendance)
 
-            // ✅ BUSCAR ASISTENCIA ABIERTA (sin salida) DE ESTA PERSONA
-            val openAttendance = dataManager.getAllAttendance()
-                .firstOrNull { attendance ->
-                    attendance.idPerson == clock.IDPerson &&
-                            attendance.timeExit == null // Sin salida registrada
+                if (existingAttendance == null) {
+                    // Primera marca del día → ENTRADA
+                    createNewAttendance(clock, dateAttendance)
+                } else {
+                    // Segunda marca del día → SALIDA
+                    updateAttendanceExit(existingAttendance, clock)
                 }
 
-            if (openAttendance == null) {
-                // ✅ PRIMERA MARCA = ENTRADA (crear nueva asistencia)
-                createNewAttendance(clock, clockDate)
-                Log.d("AttendanceController", "✅ Nueva asistencia creada (ENTRADA)")
-            } else {
-                // ✅ SEGUNDA MARCA = SALIDA (actualizar asistencia existente)
-                updateAttendanceExit(openAttendance, clock, clockDate)
-                Log.d("AttendanceController", "✅ Asistencia actualizada (SALIDA)")
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error processing clock mark: ${e.message}")
             }
-
-        } catch (e: Exception) {
-            Log.e("AttendanceController", "❌ Error procesando marca: ${e.message}", e)
-            throw Exception(context.getString(R.string.ErrorMsgAdd))
         }
     }
 
-    /**
-     * Crea nueva asistencia con marca de entrada
-     */
-    private fun createNewAttendance(clock: Clock, clockDateTime: Date) {
-        // Usar fecha de la marca como fecha de asistencia (sin resetear hora)
+    private suspend fun createNewAttendance(clock: Clock, dateAttendance: Date) {
+        val timeEntry = Date.from(clock.DateClock.atZone(ZoneId.systemDefault()).toInstant())
+
         val newAttendance = Attendances(
-            IDAttendance = UUID.randomUUID().toString(),
-            DateAttendance = clockDateTime, // ✅ Fecha REAL de entrada
+            IDAttendance = "ATT_${System.currentTimeMillis()}",
+            DateAttendance = dateAttendance,
             IDPerson = clock.IDPerson,
-            TimeEntry = clockDateTime,
+            TimeEntry = timeEntry,
             TimeExit = null,
             EntryID = clock.IDClock,
             ExitID = ""
         )
 
-        dataManager.addAttendance(newAttendance)
-
-        Log.d("AttendanceController", """
-            📥 ENTRADA REGISTRADA:
-            - Persona: ${clock.IDPerson}
-            - Fecha/Hora: $clockDateTime
-        """.trimIndent())
-    }
-
-    /**
-     * Actualiza asistencia existente con marca de salida
-     */
-    private fun updateAttendanceExit(attendance: Attendances, clock: Clock, clockDateTime: Date) {
-        attendance.timeExit = clockDateTime
-        attendance.exitID = clock.IDClock
-
-        dataManager.updateAttendance(attendance)
-
-        val hoursWorked = attendance.hoursAttendanceMinutes() / 60.0
-
-        Log.d("AttendanceController", """
-            📤 SALIDA REGISTRADA:
-            - Persona: ${clock.IDPerson}
-            - Hora entrada: ${attendance.timeEntry}
-            - Hora salida: $clockDateTime
-            - Horas trabajadas: ${hoursWorked}h
-        """.trimIndent())
-    }
-
-    /**
-     * Verifica si dos fechas son del mismo día
-     */
-    private fun isSameDay(date1: Date, date2: Date): Boolean {
-        val cal1 = Calendar.getInstance()
-        cal1.time = date1
-
-        val cal2 = Calendar.getInstance()
-        cal2.time = date2
-
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
-    }
-
-    /**
-     * Obtiene todas las asistencias
-     */
-    fun getAllAttendances(): List<Attendances> {
-        return dataManager.getAllAttendance()
-    }
-
-    /**
-     * Obtiene asistencias de una persona
-     */
-    fun getAttendancesByPerson(personId: String): List<Attendances> {
-        return dataManager.getAllAttendance().filter { it.idPerson == personId }
-    }
-
-    /**
-     * Obtiene asistencias de un rango de fechas
-     */
-    fun getAttendancesByDateRange(startDate: Date, endDate: Date): List<Attendances> {
-        return dataManager.getAllAttendance().filter { attendance ->
-            !attendance.dateAttendance.before(startDate) &&
-                    !attendance.dateAttendance.after(endDate)
+        val result = firestoreManager.addAttendance(newAttendance)
+        result.onSuccess {
+            Log.d(TAG, "✅ Entrada registrada: ${clock.IDPerson} a las ${SimpleDateFormat("HH:mm", Locale.getDefault()).format(timeEntry)}")
+        }.onFailure { e ->
+            Log.e(TAG, "❌ Error creating attendance: ${e.message}")
         }
     }
 
-    /**
-     * Elimina una asistencia
-     */
-    fun deleteAttendance(attendanceId: String) {
-        try {
-            dataManager.removeAttendance(attendanceId)
-            Log.d("AttendanceController", "🗑️ Asistencia eliminada: $attendanceId")
-        } catch (e: Exception) {
-            Log.e("AttendanceController", "❌ Error eliminando asistencia: ${e.message}", e)
-            throw Exception(context.getString(R.string.ErrorMsgRemove))
+    private suspend fun updateAttendanceExit(attendance: Attendances, clock: Clock) {
+        val timeExit = Date.from(clock.DateClock.atZone(ZoneId.systemDefault()).toInstant())
+
+        attendance.timeExit = timeExit
+        attendance.exitID = clock.IDClock
+
+        val result = firestoreManager.updateAttendance(attendance)
+        result.onSuccess {
+            val horasMinutos = attendance.hoursAttendanceMinutes()
+            Log.d(TAG, "✅ Salida registrada: ${clock.IDPerson} a las ${SimpleDateFormat("HH:mm", Locale.getDefault()).format(timeExit)}")
+            Log.d(TAG, "⏱️ Total trabajado: ${horasMinutos / 60}h ${horasMinutos % 60}m")
+        }.onFailure { e ->
+            Log.e(TAG, "❌ Error updating attendance: ${e.message}")
+        }
+    }
+
+    fun addAttendance(attendance: Attendances, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.addAttendance(attendance)
+            result.onSuccess {
+                Log.d(TAG, "✅ Attendance added successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error adding attendance: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun updateAttendance(attendance: Attendances, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.updateAttendance(attendance)
+            result.onSuccess {
+                Log.d(TAG, "✅ Attendance updated successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error updating attendance: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun removeAttendance(id: String, onSuccess: () -> Unit = {}, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            val result = firestoreManager.removeAttendance(id)
+            result.onSuccess {
+                Log.d(TAG, "✅ Attendance removed successfully")
+                onSuccess()
+            }.onFailure { e ->
+                Log.e(TAG, "❌ Error removing attendance: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun getAllAttendance(onSuccess: (List<Attendances>) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val attendances = firestoreManager.getAllAttendance()
+                Log.d(TAG, "✅ Retrieved ${attendances.size} attendances")
+                onSuccess(attendances)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting attendances: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun getByIdAttendance(id: String, onSuccess: (Attendances?) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val attendance = firestoreManager.getByIdAttendance(id)
+                onSuccess(attendance)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting attendance: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
+    fun getByIdPersonAttendance(idPerson: String, onSuccess: (List<Attendances>) -> Unit, onFailure: (String) -> Unit = {}) {
+        lifecycleOwner?.lifecycleScope?.launch {
+            try {
+                val attendances = firestoreManager.getByIdPersonAttendance(idPerson)
+                Log.d(TAG, "✅ Retrieved ${attendances.size} attendances for person: $idPerson")
+                onSuccess(attendances)
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Error getting attendances by person: ${e.message}")
+                onFailure(e.message ?: "Error desconocido")
+            }
         }
     }
 }

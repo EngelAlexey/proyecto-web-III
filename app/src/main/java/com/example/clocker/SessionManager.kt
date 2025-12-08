@@ -2,57 +2,55 @@ package com.example.clocker
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
 
 class SessionManager(context: Context) {
-
-    private val prefs: SharedPreferences =
-        context.getSharedPreferences("SessionPrefs", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = context.getSharedPreferences("AppSession", Context.MODE_PRIVATE)
+    private val editor: SharedPreferences.Editor = prefs.edit()
+    private val gson = Gson()
 
     companion object {
-        private const val KEY_USER_ID = "user_id"
-        private const val KEY_USERNAME = "username"
-        private const val KEY_ROL = "rol"
-        private const val KEY_IS_LOGGED = "is_logged"
+        private const val KEY_USER_JSON = "user_json"
+        private const val KEY_IS_LOGGED_IN = "is_logged_in"
     }
 
     fun guardarSesion(usuario: Usuario) {
-        prefs.edit().apply {
-            putString(KEY_USER_ID, usuario.id)
-            putString(KEY_USERNAME, usuario.nombreUsuario)
-            putString(KEY_ROL, usuario.rol)
-            putBoolean(KEY_IS_LOGGED, true)
-            apply()
-        }
+        val usuarioJson = gson.toJson(usuario)
+        editor.putString(KEY_USER_JSON, usuarioJson)
+        editor.putBoolean(KEY_IS_LOGGED_IN, true)
+        editor.apply()
     }
 
     fun obtenerUsuarioActual(): Usuario? {
-        if (!isLoggedIn()) return null
-
-        return Usuario(
-            id = prefs.getString(KEY_USER_ID, "") ?: "",
-            nombreUsuario = prefs.getString(KEY_USERNAME, "") ?: "",
-            contrasena = "", // No guardamos la contraseña en sesión
-            rol = prefs.getString(KEY_ROL, "") ?: ""
-        )
+        val usuarioJson = prefs.getString(KEY_USER_JSON, null)
+        return if (usuarioJson != null) {
+            try {
+                gson.fromJson(usuarioJson, Usuario::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        } else {
+            null
+        }
     }
 
     fun isLoggedIn(): Boolean {
-        return prefs.getBoolean(KEY_IS_LOGGED, false)
+        return prefs.getBoolean(KEY_IS_LOGGED_IN, false)
     }
 
-    fun cerrarSesion() {
-        // Limpiar todas las preferencias
-        prefs.edit().clear().commit() // Usar commit() en lugar de apply() para asegurar limpieza inmediata
-
-        // Log para debugging (opcional)
-        android.util.Log.d("SessionManager", "Sesión cerrada y datos limpiados")
-    }
-
+    // Verifica rol "Administrador" (como está en tu BD) o "admin" por compatibilidad
     fun esAdministrador(): Boolean {
-        return prefs.getString(KEY_ROL, "") == "Administrador"
+        val usuario = obtenerUsuarioActual()
+        return usuario?.rol == "Administrador" || usuario?.rol == "admin"
     }
 
     fun esReloj(): Boolean {
-        return prefs.getString(KEY_ROL, "") == "Reloj"
+        val usuario = obtenerUsuarioActual()
+        return usuario?.rol == "Reloj" || usuario?.rol == "reloj"
+    }
+
+    fun cerrarSesion() {
+        editor.clear()
+        editor.apply()
     }
 }
