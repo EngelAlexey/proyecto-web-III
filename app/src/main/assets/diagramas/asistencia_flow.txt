@@ -1,0 +1,65 @@
+graph TD;
+
+%% INICIO
+Usuario[Usuario abre modulo asistencia] --> Init[onCreate Activity]
+Init --> DataManager[Inicializar MemoryDataManager]
+Init --> Controller[Inicializar PersonController]
+Controller --> GetPersons[getAllPerson]
+GetPersons --> SetupUI[Configurar RecyclerView y Adapter]
+
+%% SELECCION DE PERSONAS
+SetupUI --> ClickSelect[Click Seleccionar Personas]
+ClickSelect --> Dialog[Mostrar Dialog MultiChoice]
+Dialog --> SelectIDs[Seleccionar IDs personas]
+SelectIDs --> UpdateButton[Actualizar texto boton]
+
+%% SELECCION DE FECHAS
+SetupUI --> ClickStart[Click Fecha Inicio]
+ClickStart --> DatePickerStart[Abrir DatePicker Inicio]
+DatePickerStart --> SaveStart[Guardar startDate]
+
+SetupUI --> ClickEnd[Click Fecha Fin]
+ClickEnd --> DatePickerEnd[Abrir DatePicker Fin]
+DatePickerEnd --> SaveEnd[Guardar endDate]
+
+%% BUSQUEDA
+UpdateButton --> ClickSearch
+SaveStart --> ClickSearch
+SaveEnd --> ClickSearch
+
+ClickSearch[Click Buscar] --> GetAttendances[getAllAttendance]
+
+GetAttendances --> HasPersons{Hay personas seleccionadas}
+HasPersons -- Si --> FilterPerson[Filtrar por idPerson]
+HasPersons -- No --> CheckDates
+
+FilterPerson --> CheckDates{Fechas definidas}
+CheckDates -- Si --> FilterDates[Filtrar por rango fechas]
+CheckDates -- No --> UpdateList
+
+FilterDates --> UpdateList[Actualizar Adapter]
+
+%% CALCULO TOTALES
+UpdateList --> SumMinutes[Sumar minutos trabajados]
+SumMinutes --> ConvertTime[Convertir a horas y minutos]
+ConvertTime --> ShowTotal[Mostrar total trabajado]
+
+%% EXPORTAR PDF
+UpdateList --> ClickPDF[Click Exportar PDF]
+ClickPDF --> EmptyList{Lista vacia}
+EmptyList -- Si --> PdfError[Mostrar mensaje error]
+EmptyList -- No --> GeneratePDF[Generar PDF]
+GeneratePDF --> ShowPath[Mostrar ruta PDF]
+
+%% SALIR
+SetupUI --> ClickBack[Click Volver]
+ClickBack --> Finish[Finalizar Activity]
+
+%% ESTILOS
+style Usuario fill:#e1f5ff,stroke:#333,stroke-width:2px
+style ClickSearch fill:#fff3cd,stroke:#333,stroke-width:2px
+style ClickPDF fill:#fff3cd,stroke:#333,stroke-width:2px
+style PdfError fill:#f8d7da,stroke:#333,stroke-width:2px
+style ShowTotal fill:#d4edda,stroke:#333,stroke-width:2px
+style GeneratePDF fill:#d4edda,stroke:#333,stroke-width:2px
+style Finish fill:#d4edda,stroke:#333,stroke-width:2px
