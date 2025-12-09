@@ -13,6 +13,8 @@ class Attendances {
     private var EntryID: String = ""
     private var ExitID: String = ""
 
+    constructor()
+
     constructor(
         IDAttendance: String,
         DateAttendance: Date,

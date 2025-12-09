@@ -9,8 +9,7 @@ import java.util.Date
 
 class ClockController(private val context: Context) {
 
-    private var dataManager: IDataManager = MemoryDataManager
-
+    private var dataManager: IDataManager = Data.FirebaseDataManager
     // ✅ NUEVO: Instancia del AttendanceController
     private val attendanceController = AttendanceController(context)
 

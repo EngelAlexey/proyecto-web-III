@@ -1,5 +1,6 @@
 package Controller
 
+import Data.IDataManager
 import Data.MemoryDataManager
 import Entity.Attendances
 import Entity.Clock
@@ -18,7 +19,7 @@ import java.util.*
  */
 class AttendanceController(private val context: Context) {
 
-    private val dataManager = MemoryDataManager
+    private var dataManager: IDataManager = Data.FirebaseDataManager
 
     /**
      * Procesa una marca de reloj y la convierte en asistencia

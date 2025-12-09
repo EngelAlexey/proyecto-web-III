@@ -8,7 +8,7 @@ import com.example.clocker.R
 
 class PersonController {
 
-    private var dataManager: IDataManager = MemoryDataManager
+    private var dataManager: IDataManager = Data.FirebaseDataManager
     private var context: Context
 
     constructor(context: Context){
